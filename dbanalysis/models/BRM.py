@@ -1,3 +1,9 @@
+"""
+@diarmuidmorgan
+
+Model used to model travel time for a route as a function of date,weather,and distance travelled.
+"""
+
 from dbanalysis import stop_tools
 import pandas as pd
 import numpy as np

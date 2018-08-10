@@ -1,3 +1,8 @@
+"""
+@diarmuidmorgan
+Create a new stops_dict, that states which route variations each stop serves
+"""
+
 import json
 routes = json.loads(open('/home/student/dbanalysis/dbanalysis/resources/trimmed_routes.json','r').read())
 stops = json.loads(open('/home/student/dbanalysis/dbanalysis/resources/stops_trimmed.json','r').read())

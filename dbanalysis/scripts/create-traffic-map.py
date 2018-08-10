@@ -1,11 +1,14 @@
 """
-
+@diarmuidmorgan
 Idea is to create a lateness/dwelltime/traveltime map of the data
 
 Get the munged_data for every route, map it into a dictionary.
 
 Every stop should reference the stops it connects to, with values for the average dwell time, average lateness, and average travel time to that connection
 
+Very naive attempt.
+
+was used to create the website.com/heat_map_html page
 """
 
 import dbanalysis.route_tools as rt

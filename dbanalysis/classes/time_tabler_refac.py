@@ -1,3 +1,14 @@
+"""
+@diarmuid
+@gavin (add timetables to database)
+
+Two different time table classes
+
+time_tabler is for generating departure times
+
+time_table is a bus stops timetable container
+"""
+
 import pandas as pd
 import json 
 import pickle
@@ -214,10 +225,13 @@ class stop_time_table():
         return None
       
     def get_next_departure_route(self,day,link,current_time,route):
-        index = self.data[day][link][np.searchsorted(self.data[day][link][0:,0],current_time)]
-        for i in self.data[day][link][index:]:
-            if i[2] == route:
-                return i         
+        index = np.searchsorted(self.data[day][link][0:,0],current_time)
+        if index >= self.data[day][link].shape[0]:
+            return None
+        for i in range(index,self.data[day][link].shape[0]):
+            row = self.data[day][link][i]
+            if row[2] == route or row[2] == str(route):
+                return row         
         return None
     def get_time_table(self,day):
         output = []
@@ -237,7 +251,7 @@ class stop_time_table():
         
         from sqlalchemy import create_engine
        
-        engine = create_engine("mysql://dublinbus:Ucd4dogs!@127.0.0.1/researchpracticum")
+        engine = create_engine("mysql://dublinbus:somepaawsord/researchpracticum")
         con = engine.connect()
         df.to_sql(con=con, name='TimeTables', if_exists='append')
         con.close()    

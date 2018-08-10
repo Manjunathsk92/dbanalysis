@@ -1,4 +1,6 @@
-"""Splits the large leavetime files up using pandas.
+"""
+@diarmuidmorgan
+Splits the large leavetime files up using pandas.
 
 Splits them into ~500 files, where each file is all of the samples that correspond to a given route id
 """

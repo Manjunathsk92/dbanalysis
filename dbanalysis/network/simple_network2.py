@@ -1,3 +1,13 @@
+"""
+@diarmuidmorgan
+Network class (hopefully) used in final product.
+Uses chained linear models.
+Meant to serve as something like a singleton to the app.
+Loads all of the required classes and tries to answer all app requests.
+Includes working, fast, version of dijkstra
+
+"""
+
 import pandas as pd
 from math import inf
 from threading import Thread
@@ -105,14 +115,24 @@ class simple_network():
             for variation in times:
                     
                 if not self.selector.get_unavailable(route,int(variation)):
-                    try:
-                        count +=1
-                        print(count,route+'_'+str(variation))
-                        X=times[variation]
-                        # merge with weather data to add weather features.
-                        X['matrix'] = pd.merge(X['matrix'],weather[['day','hour','rain','temp','vappr']],on = ['day','hour'])
-                        self.run_route(X['matrix'],X['pattern'])
                     
+                    count +=1
+                    print(count,route+'_'+str(variation))
+                    X=times[variation]
+                    print(X['matrix'])
+                    print('thing')
+                    input()
+                        # merge with weather data to add weather features.
+                    #X['matrix'] = pd.merge(X['matrix'],weather[['day','hour','rain','temp','vappr']],on = ['day','hour'])
+                    X['matrix']['rain']=0.5
+                    X['matrix']['temp']=10
+                    X['matrix']['vappr']=10
+                    
+                    
+                    input() 
+                    self.run_route(X['matrix'],X['pattern'])
+                    try:
+                        pass
                     except Exception as e:
                         print(e)
               
@@ -125,24 +145,31 @@ class simple_network():
         
     def quick_predict(self,day,route,v_num,stopA,stopB,time):
         """
-        Generate an on the fly prediction for time from A to B. Doesn't use timetables.
+        Generate an on the fly prediction for time from A to B..
         """
-        d = {'rain':[0.08],'vappr':[10.01],'temp':[10.01],'actualtime_arr_from':[time],\
-            'actualtime_arr_to':[time],'day':[day],'hour':[time//3600]}
+        # get the next departure at A        
+        
+        arr = self.routes[route][v_num][1:]
+        start = arr.index(int(stopA))
+        end = arr.index(int(stopB)) - 1
+        link = str(arr[start+1])
+        departure_time = self.nodes[str(stopA)].timetable.get_next_departure_route(day,link,time,route)[0]
+        if departure_time is None:
+            return None
+        
+        d = {'rain':[0.08],'vappr':[10.01],'temp':[10.01],'actualtime_arr_from':[departure_time],\
+            'actualtime_arr_to':[departure_time],'day':[day],'hour':[time//3600]}
         df = pd.DataFrame(d)        
         for i in range(2,5):
             df['day'+str(i)] = df['day']**i
             df['hour'+str(i)] = df['hour'] ** i
            
        
-        arr = self.routes[route][v_num][1:]
-        start = arr.index(int(stopA))
-        end = arr.index(int(stopB)) - 1
         total_time = 0
         for i in range(start,end):
             row,traveltime = self.nodes[str(arr[i])].single_predict(df,str(arr[i+1]))
             total_time += traveltime[0]
-        return total_time
+        return total_time,departure_time
     
     def get_next_stop(self,stopA,stopB,day,time):
         """
@@ -165,12 +192,12 @@ class simple_network():
         if not solved:
             return None
         else:
-            response = self.walk_back_dijkstra(origin_lat,origin_lon,end_lat,end_lon,current_time)
+            response,stop_markers = self.walk_back_dijkstra(origin_lat,origin_lon,end_lat,end_lon,current_time)
             tear_down = Thread(target=self.tear_down_dijkstra)
             tear_down.start()
             if text_response:
                 text = self.get_directions(response)
-                return {'data':response,'text':text}
+                return {'data':response,'text':text,'stop_markers':stop_markers}
             else:
                 return {'data':response}
 
@@ -196,7 +223,8 @@ class simple_network():
                  
                 elif resp[i]['id'] == 'end':
                     print(current_stop)
-                    text.append('Walk from '+ current_stop['data']['stop_name'] + ' to destination. ' + str((resp[i]['time']-time)//60) + ' minutes.') 
+                    text.append('Walk from '+ current_stop['data']['stop_name'] +\
+                                 ' to destination. ' + str((resp[i]['time']-time)//60) + ' minutes.') 
                 else:
                     text.append('Take the ' + current_route\
                                 +' from '\
@@ -210,12 +238,57 @@ class simple_network():
                 current_stop = resp[i]
                 time = current_stop['time']
         return text
+    def dijkstra_shape(self,data):
+        walking_bits = []
+        bus_bits = []
+        current_walking_bit = []
+        current_bus_bit = []
+        current_route = 'walking'
+        for i in range(0,len(data)-1):
+            if data[i]['route'] == 'walking':
+                if current_route != 'walking':
+                    current_route = 'walking'
+                    bus_bits.append(current_bus_bit)
+                    current_bus_bit = []
+                shape = self.stop_getter.get_shape(data[i+1]['id'],data[i]['id'])       
+                if shape is None:
+                    current_walking_bit+=[{'lat':data[i]['data']['lat'],'lng':data[i]['data']['lon']},\
+                                    {'lat':data[i+1]['data']['lat'],'lng':data[i+1]['data']['lon']}]
+                else:
+                    # this is blatantly wasteful here.
+                    current_walking_bit += [{'lat':i['lat'],'lng':i['lon']} for i in list(reversed(shape))]
+            else:
+                
+                if current_route == 'walking':
+                    current_route = 'not walking'
+                    walking_bits.append(current_walking_bit)
+                    current_walking_bit = []
+                try:
+                    # again. Blatant waste
+                    current_bus_bit += [{'lat':i['lat'],'lng':i['lon']} for i in\
+                    list(reversed(self.stop_getter.get_shape(data[i+1]['id'],data[i]['id'])))]
+                except:
+                    pass
+                    
+        if current_bus_bit != []:
+            bus_bits.append(current_bus_bit)
+    
+        elif current_walking_bit != []:
+            i = len(data) - 1
+            current_walking_bit.append({'lat':data[i]['data']['lat'],'lng':data[i]['data']['lon']})
+            walking_bits.append(current_walking_bit)
+        return {'bus':bus_bits,'walk':walking_bits}
 
-    def main_dijkstra(self,day,current_time,walking_penalty=30,bus_penalty=30):
+
+        pass
+        
+    def main_dijkstra(self,day,current_time,walking_penalty=90,bus_penalty=90):
         """
         Actual implementation of dijkstra's algorithm on time dependant(ish) graph
         """
+        print('doing_dijkstra')
         import heapq
+        from math import inf
         to_visit = []
         solved = False
         heapq.heappush(to_visit,[current_time,'begin','w'])
@@ -223,7 +296,7 @@ class simple_network():
             x = heapq.heappop(to_visit)
             current_time = x[0]
             current_node = x[1]
-            
+            print(current_node) 
             current_route = x[2]
             if self.nodes[current_node].visited:
                 continue
@@ -233,32 +306,42 @@ class simple_network():
                 break
             links = self.nodes[current_node].all_links
             for link in links:
+                
                 if self.nodes[link].visited:
                     continue
                 #try the bus link nodes first. Optimize this to maybe increase the chance of walking, if it is signigicantly faster?
+                route = 'na'
+                min_bus_time = inf
+                min_walking_time = inf
                 if link in self.nodes[current_node].links:
                     resp = self.get_next_stop(current_node,link,day,current_time)
                     if resp is None:
-                        continue
+                        route = 'na'
+                        
                     else:
                         resp = resp[0]
-                    time = resp[1]
-                    route = resp[2]
-                    if current_route != 'w' and current_route != route:
-                        time += bus_penalty
-                    if time < self.nodes[link].weight:
-                        self.nodes[link].weight = time
-                        self.nodes[link].back_links.append([current_node,route,time])
-                        heapq.heappush(to_visit,[time,link,route])
+                        min_bus_time = resp[1]
+                        print(min_bus_time)
+                        route = resp[2]
+                        if current_route != 'w' and current_route != route:
+                            min_bus_time += bus_penalty
+                    
                 #if no bus link node, try foot link nodes. Optimize here to try both and compare best result
-                elif link in self.nodes[current_node].foot_links:
-                    time = self.nodes[current_node].foot_links[link] + current_time
+                if link in self.nodes[current_node].foot_links and current_route != route:
+                    min_walking_time = self.nodes[current_node].foot_links[link] + current_time
                     if current_route != 'w':
-                        time += walking_penalty
-                    if time < self.nodes[link].weight:
-                        self.nodes[link].weight = time
-                        self.nodes[link].back_links.append([current_node,'w',time])
-                        heapq.heappush(to_visit,[time,link,'w'])
+                        min_walking_time += walking_penalty
+              
+                if min_walking_time == inf and min_bus_time == inf:          
+                    continue
+                if min_walking_time <= min_bus_time and min_walking_time < self.nodes[link].weight:
+                    self.nodes[link].weight = min_walking_time
+                    self.nodes[link].back_links.append([current_node,'w',min_walking_time])
+                    heapq.heappush(to_visit,[min_walking_time,link,'w'])
+                elif min_bus_time < min_walking_time and min_bus_time < self.nodes[link].weight:
+                    self.nodes[link].weight = min_bus_time
+                    self.nodes[link].back_links.append([current_node,route,min_bus_time])
+                    heapq.heappush(to_visit,[min_bus_time,link,route])
         print(solved)
         return solved
 
@@ -268,9 +351,12 @@ class simple_network():
         """
         weight = self.nodes['end'].weight
         current_node = 'end'
+        stop_markers = []
         output = [{'id':'end','route':'walking',\
                 'data':{'lat':end_lat,'lon':end_lon,\
                         'name':'destination'},'time':weight}]
+        stop_markers.append(output[0])
+        current_route = 'walking'
         while weight > start_time:
         
             minweight = inf
@@ -296,9 +382,14 @@ class simple_network():
                 {'lat':origin_lat, 'lon':origin_lon,'stop_name':'origin'},\
                 'route':'walking',\
                 'time':start_time})
+            if route != current_route:
+                current_route = route
+                stop_markers.append(output[-1])
             current_node = new_curnode
             weight = minweight
-        return output
+        if output[-1] != stop_markers[-1]:
+            stop_markers.append(output[-1])
+        return output,stop_markers
     def add_user_nodes(self,origin_lat,origin_lon,end_lat,end_lon,start_time):
         """
         Temporarily add the user's origin and destination as dummy nodes on the graph.
@@ -343,23 +434,31 @@ class simple_network():
         """
         Concat link time tables,sort them, and pack them into dictionary objects.
         This code might be better placed inside the time table objects themselves?
+        
+        Returns times equal to or greater than the current time.
         """
-        day = int(dt.day)
+        day = int(dt.weekday())
         import numpy as np
         import datetime
-        timetables = self.nodes[str(stop)][day]
+        timetables = self.nodes[str(stop)].timetable.data[day]
         timetables = np.concatenate([timetables[link] for link in timetables],axis=0)
+        
         seconds = (dt - dt.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
         timetables = timetables[timetables[:,0].argsort()]
-        index = timetables[np.searchsorted(timetables[0:,0],seconds)]
-        if index[0] > timetables.shape[0]:
+        
+        index = np.searchsorted(timetables[0:,0],seconds)
+        if index > timetables.shape[0]:
             return None
         else:
             response = []
-            for i in range(index[0],timetables.shape[0]):
-                response.append({'arrive':str(datetime.timedelta(seconds=int(timetables[i,0]))),\
+            
+            for i in range(index,timetables.shape[0]):
+                s = int(timetables[i,0]) % 86400
+                
+                response.append({'arrive':str(datetime.timedelta(seconds=s)),\
                                 'route':timetables[i,2]})
-        return response
+            return response
+
 class dummy():
     """
     Dummy node for user location and destination
@@ -387,7 +486,7 @@ class dummy():
 #    pickle.dump(n,handle,protocol=pickle.HIGHEST_PROTOCOL)
 if __name__ == '__main__':
     #n=simple_network()
-    import pickle
+    #import pickle
 
     #with open('simple_network_dump.bin','wb') as handle:
     #    pickle.dump(n,handle,protocol=pickle.HIGHEST_PROTOCOL)
@@ -425,18 +524,19 @@ if __name__ == '__main__':
     #    except Exception as e:
     #        print(e)
     #        pass
-    #with open('simple_network_dump.bin','rb') as handle:
-    #    n=pickle.load(handle)
+    #with open('timetables_dump.bin','wb') as handle:
+    #    pickle.dump(n.nodes,handle,protocol=pickle.HIGHEST_PROTOCOL)
     #with open('simple_nAttributeError: Can't get attribute 'simple_network' on <module '__main__' from 'manage.py'>AttributeError: Can't get attribute 'simple_network' on <module '__main__' from 'manage.py'>ietwork_concated','wb') as handle:
     #    pickle.dump(n,handle,protocol=pickle.HIGHEST_PROTOCOL)             
-    import pickle
+   # import pickle
     with open('simple_network_concated','rb') as handle:
         n = pickle.load(handle)
-    r15 = n.routes['15'][1]
-    a = r15[1]
-    b= r15[68]
-    print(n.quick_predict(5,'15',1,a,b,19*3600))
-    a = 15000000
+   # r15 = n.routes['15'][1]
+   # a = r15[1]
+   # b= r15[68]
+   # print(n.quick_predict(5,'15',1,a,b,19*3600))
+   # a = 15000000
+    
     #for i in range (1,len(r15)-1):
         
     #    a=n.nodes[str(r15[i])].timetable.get_next_departure(4,str(r15[i+1]),a)[1]
@@ -444,5 +544,12 @@ if __name__ == '__main__':
     
     n.prepare_dijkstra()
     resp=n.dijkstra(4,36000,53.3991,-6.2818,53.2944,-6.1339)
-    print(resp['text'])     
-    
+     
+    #print(n.dijkstra_shape(resp['data']))
+    print(resp['stop_markers'])
+    #import datetime
+    #dt = datetime.datetime.now()
+    #for node in n.nodes:
+
+    #    input() 
+    #    print(n.get_stop_time_table(node,dt)) 

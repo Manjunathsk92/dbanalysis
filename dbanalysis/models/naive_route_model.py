@@ -1,6 +1,7 @@
 """
+@diarmuidmorgan
 This is deprecated, and probably doesn't even work anymore.
-Was used at one stage to test stop_link models.
+Was used early in project to test stop_link models.
 """
 
 import pandas as pd

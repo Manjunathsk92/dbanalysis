@@ -1,3 +1,11 @@
+"""
+@diarmuidmorgan
+
+First attempt to create cluster matrix.
+
+Dwell time was used, despite this being 0 for a large swathe of the data.
+"""
+
 from dbanalysis.stop_tools import stop_getter
 s_getter=stop_getter()
 def prep_stop2(df,fromstop,tostop):

@@ -1,3 +1,9 @@
+"""
+@diarmuidmorgan
+was used to create a cluster matrix. I think.
+Again, a naive attempt
+"""
+
 import os
 import pickle
 import pandas as pd

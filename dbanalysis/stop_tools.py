@@ -1,6 +1,7 @@
 """
+@diarmuidmorgan
+Bunch of code for getting and prepping data about stops. Includes stop_finder and stop_getter classes.
 
-Set of functions for retrieving and analyzing stop-stop links. 
 
 """
 import haversine
@@ -9,6 +10,7 @@ import pandas as pd
 def get_stop_link(stopA,stopB, src='file',merge_weather=False):
     
     """
+    Almost redundant,or possibly still used by the Big Route Model. Use stop_tools.stop_data() instead
     Retrieve the data describing the link between two stops
     """
     import os
@@ -85,11 +87,13 @@ class stop_getter():
             return None
 
     def get_stop_distance(self,stop,link):
+        stop = str(stop)
+        link = str(link)
         
-        if stop in self.stops_map and link in self.stops_map[stop]:
+        coords = self.get_shape(stop,link)
+        if coords is not None:
             #if we have full shape coordinates for a the link, use these
-            coords = [self.get_stop_coords(stop)] + self.stops_map[stop][link]\
-                            + [self.get_stop_coords(link)]
+          
             total_distance = 0
             for i in range(0, len(coords)-1):
                 lat1 = coords[i]['lat']
@@ -113,14 +117,22 @@ class stop_getter():
             #otherwise just return nothing
             return None
 
-    def get_shape(self,stop,link):
+    def get_shape(self,stopA,stopB):
         #if we have the shape for this stop link, then return it
         #can be chained to return route shape between multiple stops
+        stop = str(stopA)
+        link = str(stopB)
+        found_stops = True
         if stop in self.stops_map and link in self.stops_map[stop]:
-
+          
             return [self.get_stop_coords(stop)]+self.stops_map[stop][link]\
                         + [self.get_stop_coords(link)]
+        
+        elif link in self.stops_map and stop in self.stops_map[link]:
             
+            return list(reversed([self.get_stop_coords(link)] + self.stops_map[link][stop]\
+                    + [self.get_stop_coords(stop)]))
+             
         else:
             return None
 

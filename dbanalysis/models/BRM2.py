@@ -1,3 +1,8 @@
+"""
+@diarmuidmorgan
+
+Tried to do BRM better. Mostly failed.
+"""
 from dbanalysis import stop_tools
 import pandas as pd
 import numpy as np

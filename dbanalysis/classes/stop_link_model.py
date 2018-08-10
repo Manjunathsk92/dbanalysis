@@ -1,4 +1,11 @@
+"""
+@diarmuidmorgan
 
+Redundant
+
+Stop link model used for first and second prototype.
+
+"""
 import pandas as pd
 class stop_link_model():
     """

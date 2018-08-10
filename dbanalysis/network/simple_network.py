@@ -1,3 +1,10 @@
+"""
+@diarmuidmorgan
+
+Network built to use big route models.
+Approach never took off.
+"""
+
 from math import inf
 class network():
 

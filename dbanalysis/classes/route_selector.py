@@ -1,3 +1,10 @@
+"""
+@diarmuidmorgan
+Handles sending data about routes to the front end.
+Sadly, none of this data made it into the database.
+
+"""
+
 class selector():
 
     def __init__(self):

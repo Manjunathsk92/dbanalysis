@@ -1,3 +1,10 @@
+"""
+@diarmuidmorgan
+Bunch of functions that may or may not have been used early on in the project.
+Get munged_route_data was used to turn the basic dublin bus route dataframe into dataframes that described stop links.
+
+"""
+
 import pandas as pd
 import json
 import os 
@@ -166,8 +173,8 @@ def get_munged_route_data(routename):
 
 def get_munged_route_data_and_orphans(routename,year='2017'):
     """
-    Same as above, but also returns a dataframe of 'oprhans' --> the stops that don't connect to the next stop on any given route.
-
+    Same as above, but also returns a dataframe of 'oprhans' --> the stops that don't connect to the next sequential stop on any given route.
+    Probably did not merit an entire extra function.
     There is, apparently, a much easier way of doing this, just using pd.shift, pd.concat, and then dropping the rows that don't match up properly.
 
     e.g 

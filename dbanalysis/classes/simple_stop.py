@@ -1,4 +1,5 @@
 """
+@diarmuidmorgan
 
 The class representing a stop
 
@@ -67,12 +68,12 @@ class stop():
             #print(traveltime.min(),traveltime.mean())
             #print('Bad prediction for', self.stop_id,link)
             #input()
-        if traveltime.max() > 500:
+        elif traveltime.max() > 500:
             #print(traveltime.max(),traveltime.mean())
             #print('Obscene prediction for',self.stop_id,link)
             #input()
             print(self.link_distances[str(link)] / (traveltime.mean()/3600),traveltime.mean())
-            pass
+            
         df['actualtime_arr_to'] = df['actualtime_arr_from'] + traveltime
         del(traveltime)
         self.add_to_time_table(link,df[['day','actualtime_arr_from','actualtime_arr_to','routeid']])

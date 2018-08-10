@@ -1,7 +1,9 @@
 """
+@diarmuidmorgan
 
 Network of bus stops, with models on the go.
 
+Used in first and second prototypes
 """
 from dbanalysis import route_tools as rt
 from dbanalysis.classes import stop as bus_stop

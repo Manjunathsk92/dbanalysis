@@ -1,3 +1,8 @@
+"""
+@diarmuidmorgan
+Script used to build all linear models, and modelling missing or low scoring stop links based on the last available good data frame.
+"""
+
 import copy
     
     
