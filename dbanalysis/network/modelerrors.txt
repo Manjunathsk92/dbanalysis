@@ -1,0 +1,104 @@
+Ids:271_340 From :Dublin, Lower O'Connell Street To :Dublin City South, Pearse Street Garda Station Max prediction : 596.096564569913 Mean prediction : 280.8356475296237
+Ids:271_404 From :Dublin, Lower O'Connell Street To :Trinity College, Nassau St. (Opp. Frederick St) Max prediction : 887.7525673494913 Mean prediction : 379.71460458084465
+Ids:33_7270 From :Wadelai, Glasnevin Drive To :County Wicklow, Valleymount Road Max prediction : 6677.844161441131 Mean prediction : 6004.056337594685
+Ids:7270_6122 From :County Wicklow, Valleymount Road To :Wadelai, Saint Pappin's Road Max prediction : 6657.000069569229 Mean prediction : 5864.213972442151
+Ids:4983_2042 From :Dun Laoghaire, Town Hall To :Dun Laoghaire, York Road Max prediction : 809.999087484653 Mean prediction : 661.6112648036387
+Ids:5046_7639 From :Carrickmines, Druid Valley To :Rathmichael, Bride's Glen Bus Stop Max prediction : 1050.4868244642184 Mean prediction : 645.8525957337527
+Ids:2965_2967 From :Ballyboden, Whitechurch Road To :Rathfarnham, Eden Avenue Max prediction : 1250.378573563963 Mean prediction : 1230.1698602009699
+Ids:4988_2853 From :Stone Masons Way To :Broadford Road (Stone Masons Way) Max prediction : 647.7899777736094 Mean prediction : 636.7357481746592
+Ids:2861_2829 From :Ballinteer, Wesley College To :Ballinteer, Sandyford Road Max prediction : 1714.6917033540615 Mean prediction : 1685.4313003984064
+Ids:3321_4727 From :Stillorgan, Allen Park Road To :Stillorgan, Laurence Park Max prediction : 623.5982960012497 Mean prediction : 613.4526025374325
+Ids:7588_281 From :Pearse Street To :Rotunda, Dublin Bus Head Office Max prediction : 1316.5890001339453 Mean prediction : 1295.168626635738
+Ids:7588_325 From :Pearse Street To :Temple Bar, Aston Quay Max prediction : 653.5428605403597 Mean prediction : 541.5371444973424
+Ids:7588_4717 From :Pearse Street To :Busáras Max prediction : 1377.9709864571046 Mean prediction : 674.5192450660912
+Ids:400_279 From :Trinity College, Shaw Street To :Dublin, Millennium Spire Max prediction : 506.98159896690925 Mean prediction : 453.6107096836362
+Ids:4495_2809 From :Dublin City South, Hawkin's Street To :Pearse Station, Outside Train Station Max prediction : 802.9665550224166 Mean prediction : 739.0612401639131
+Ids:274_1505 From :Dublin, Millennium Spire To :Dublin, Parnell Street Max prediction : 510.22406360569244 Mean prediction : 416.4753671340538
+Ids:270_335 From :Dublin, Upper O'Connell Street To :Dublin City South, D'Olier House Max prediction : 653.8530229032044 Mean prediction : 266.00176189613444
+Ids:7582_407 From :Temple Bar, Central Bank To :Custom House Quay Max prediction : 506.1070367037652 Mean prediction : 476.0881930127494
+Ids:7623_6312 From :East Wall, East Wall Road To :Drinan, Link Road Max prediction : 927.0395745468979 Mean prediction : 912.4981738212385
+Ids:7623_3714 From :East Wall, East Wall Road To :Jamestown, Ennis Lane Max prediction : 9183.244039914814 Mean prediction : 7918.283877366095
+Ids:7623_3713 From :East Wall, East Wall Road To :Swords, Seatown West Max prediction : 3272.610131772956 Mean prediction : 3109.512667727304
+Ids:7623_3676 From :East Wall, East Wall Road To :Rathingle, Dublin Road (Boroimhe) Max prediction : 1542.118120021974 Mean prediction : 1523.88370052423
+Ids:7623_7401 From :East Wall, East Wall Road To :Dublin Airport   Max prediction : 2122.724654066685 Mean prediction : 1705.5815910650363
+Ids:6311_7399 From :Drinan, Link Road To :The 3Arena (Point Depot) Max prediction : 879.5005590150292 Mean prediction : 833.1401351323716
+Ids:6311_4495 From :Drinan, Link Road To :Dublin City South, Hawkin's Street Max prediction : 4348.571635135793 Mean prediction : 4268.831652884973
+Ids:6311_112 From :Drinan, Link Road To :Ballymun, Civic Centre Max prediction : 2620.6641874660863 Mean prediction : 2571.853091401291
+Ids:7453_1478 From :Smithfield, Ocean House To :Smithfield, Inns Quay Max prediction : 5123.787322996452 Mean prediction : 4743.550947624578
+Ids:7453_2001 From :Smithfield, Ocean House To :Dublin City South, Saint Audeon's Church Max prediction : -39.3679938017252 Mean prediction : 89.23941459319765
+Ids:110_124 From :Ballymun, Balbutcher Lane (Árd Na Meala) To :Santry, Shangan Road Max prediction : 895.289225189939 Mean prediction : 444.424466154179
+Ids:2679_4691 From :Fonthill Road - Foxdene To :Ronanstown, Ballyowen Park Max prediction : -26.39966564549586 Mean prediction : 1.4735249971367275
+Ids:4715_4795 From :Palmerston, Liffey Valley Shopping Centre To :Palmerston, Liffey Valley Shopping Centre Max prediction : 1472.4731273787884 Mean prediction : 723.1160884505815
+Ids:315_406 From :Dublin, Bachelors Walk To :Trinity College, Northern Ireland Tourist Board Max prediction : 548.3324721801905 Mean prediction : 352.9156067766373
+Ids:315_404 From :Dublin, Bachelors Walk To :Trinity College, Nassau St. (Opp. Frederick St) Max prediction : 515.8792785283802 Mean prediction : 310.620392281935
+Ids:4599_7184 From :Ballyowen, Slip Road onto the N4 To :Ballyowen, Lucan Bypass Max prediction : 533.0163746828937 Mean prediction : 407.59243171143885
+Ids:1476_7453 From :Wolfe Tone Quay, Ellis Street To :Smithfield, Ocean House Max prediction : -10.510137198990009 Mean prediction : 101.57845419921095
+Ids:1479_315 From :Dublin, Upper Ormond Quay To :Dublin, Bachelors Walk Max prediction : -31.39267188068621 Mean prediction : 160.71171396916037
+Ids:298_496 From :Dublin, Liberty Hall To :Busáras Max prediction : 679.3128949749608 Mean prediction : 271.95949652255223
+Ids:4593_4595 From :Balgriffin, Clare Hall Estate (Templeview Vale Rd) To :Balgriffin, Clare Hall Estate (Templeview Avenue) Max prediction : 506.338486804092 Mean prediction : 304.224712856371
+Ids:3332_3333 From :Dunboyne, Station Road, School To :Dunboyne, Dunboyne Village Max prediction : 625.8374108923804 Mean prediction : 300.2249199118325
+Ids:675_303 From :Amiens Street Junction Upper Sheriff Str To :Dublin, Eden Quay Max prediction : 838.0652694993539 Mean prediction : 532.1509150720093
+Ids:496_523 From :Busáras To :Fairview, Marino College Fairview Max prediction : 776.4325127997031 Mean prediction : 719.1322874785079
+Ids:496_522 From :Busáras To :Fairview, Fairview Footbridge Max prediction : 676.4399758819717 Mean prediction : 638.6247971857521
+Ids:1749_544 From :Dollymount, Clontarf Bus Garage To :Bayside, Bayside Estate Max prediction : 531.855969778508 Mean prediction : 512.1416078595595
+Ids:3814_3815 From :Skerries, Balbriggan Road To :Skerries, Northcliffe Heights Max prediction : 750.0936218230397 Mean prediction : 559.704255637969
+Ids:3749_3750 From :Donabate, Balheary Bridge To :Swords, Balheary Park Max prediction : -5.314571877619709 Mean prediction : 20.336336570944706
+Ids:3750_6252 From :Swords, Balheary Park To :Jury's Inn Custom House Quay Max prediction : 1927.221446638326 Mean prediction : 1917.4395279738635
+Ids:333_747 From :Dublin City South, O'Connell Bridge House To :Dublin City South, Archbishop Statue Max prediction : 934.4704161768229 Mean prediction : 914.1038797704723
+Ids:6050_7398 From :Donabate, Drogheda Road (Hearse Road) To :Docklands, Convention Centre Max prediction : 1968.0509227118062 Mean prediction : 1776.5679721419742
+Ids:6059_404 From :Dublin, Millennium Spire To :Trinity College, Nassau St. (Opp. Frederick St) Max prediction : 525.3194969643839 Mean prediction : 365.66838462055387
+Ids:4989_1845 From :Mulhuddart, I.B.M Industries To :Castleknock, Navan Road Max prediction : 611.6592064728461 Mean prediction : 607.8367361534505
+Ids:1808_4744 From :Castleknock, Navan Road To :Mulhuddart, I.B.M Industries Max prediction : 786.4850900765435 Mean prediction : 777.6874579838951
+Ids:1808_7475 From :Castleknock, Navan Road To :Blanchardstown Retail Park Max prediction : 693.3975848483461 Mean prediction : 679.7352228519098
+Ids:4747_1845 From :Blanchardstown, Shopping Centre To :Castleknock, Navan Road Max prediction : 513.9619896628373 Mean prediction : 450.93661884380697
+Ids:1909_1713 From :Arbour Hill, Prussia Street To :Arbour Hill, Stanhope Street Convent Max prediction : -52.578273846997774 Mean prediction : 106.05196329880239
+Ids:1443_1647 From :Dublin City South, Essex Quay To :Wolfe Tone Quay, Law Society Max prediction : 626.5275829165473 Mean prediction : 602.6186958316971
+Ids:279_7 From :Dublin, Millennium Spire To :Rotunda, Rotunda Hospital Max prediction : 534.3747796640325 Mean prediction : 277.81084177065134
+Ids:7014_4315 From :Kilsallaghan, Kilreesk To :Kilsallaghan, Owens Bridge Max prediction : 938.0042824206673 Mean prediction : 296.1294496687364
+Ids:4317_7013 From :Kilsallaghan, River Meade Drive To :Kilsallaghan, Kilreesk Max prediction : 629.0774682465614 Mean prediction : 521.851392085845
+Ids:5075_4915 From :Knocksedan, Rathbeale Road To :Swords Manor Brackenstown Road Swords Max prediction : 640.7745554378007 Mean prediction : 638.6788537113636
+Ids:3245_3212 From :Sallynoggin, Rochestown Avenue(Johnstown Road) To :Sallynoggin, Granitefield Estate Max prediction : -200.5069587492301 Mean prediction : -36.76067345300779
+Ids:3541_3546 From :Shankill, Hazelwood Estate To :Shankill, Outside Train Station Max prediction : 949.5501652027536 Mean prediction : 843.4441560859042
+Ids:3548_3542 From :Shankill, Lay By To :Shankill, Rathsallagh Estate Max prediction : 1889.2158913521564 Mean prediction : 1678.1083944157454
+Ids:4136_4137 From :Bray, Putland Villas To :Bray, Boghall Road (Vevay Road) Max prediction : 658.9618925798062 Mean prediction : 501.1938864761435
+Ids:4138_4139 From :Boghall Road (Cherry Tree Drive) To :Bray, Woodbrook Lawn Max prediction : 521.6875696567822 Mean prediction : 396.37377764660624
+Ids:7555_4962 From :Mountjoy Square Nth To :Summerhill (Dublin City), Mountjoy Square Park Max prediction : 516.9754418749028 Mean prediction : 467.84613807129557
+Ids:5192_342 From :Dublin City South, Fleet Street To :Trinity College Max prediction : 810.3163814714543 Mean prediction : 439.4329954758596
+Ids:1358_342 From :Temple Bar, Central Bank To :Trinity College Max prediction : 663.5323517749825 Mean prediction : 474.381282501572
+Ids:1358_7564 From :Temple Bar, Central Bank To :Dublin City, Poolbeg Street Max prediction : 1401.7295566775178 Mean prediction : 798.4086314518597
+Ids:3373_3374 From :Lucan, Lucan Heights To :Lucan, Saint Mary's Church Max prediction : -1.5466059749723158 Mean prediction : 49.20107744626116
+Ids:1367_1369 From :Rialto, Rialto Parish Centre To :Kilmainham, South Circular Road (Mountshannon Road) Max prediction : 1021.4358996164932 Mean prediction : 843.7017293609738
+Ids:2637_1956 From :Outside Heuston Train Station To :Bluebell, Naas Road (Kylemore Road) Max prediction : 897.2252733494844 Mean prediction : 886.005747286401
+Ids:1956_2109 From :Bluebell, Naas Road (Kylemore Road) To :Tallaght, Knockmeenagh Lane Max prediction : 552.513166017371 Mean prediction : 546.873868016473
+Ids:3429_3432 From :Tallaght, Cheeverstown To :Citywest, Bianconi Avenue Max prediction : 515.1982939722689 Mean prediction : 509.9398551006556
+Ids:4_4962 From :Rotunda, Rotunda Hospital To :Summerhill (Dublin City), Mountjoy Square Park Max prediction : 555.0851946975399 Mean prediction : 372.2528389484201
+Ids:4_7555 From :Rotunda, Rotunda Hospital To :Mountjoy Square Nth Max prediction : 673.8103076075352 Mean prediction : 650.6589762476709
+Ids:4768_1845 From :Castaheaney, Castaheany Estate To :Castleknock, Navan Road Max prediction : 652.7757155790756 Mean prediction : 554.1971188075582
+Ids:175_5147 From :Glasnevin, Tolka Road Estate #1 To :Cabra, Marian College Max prediction : 535.496266058539 Mean prediction : 516.7788602468107
+Ids:1814_4325 From :Blanchardstown, Main Street Blanchardstown (Ramor Park) To :Mulhuddart, Old Navan Road Max prediction : 1049.8576921490646 Mean prediction : 1020.6161639429984
+Ids:4319_1476 From :Heuston Station, Victoria Quay To :Wolfe Tone Quay, Ellis Street Max prediction : -60.80403114661433 Mean prediction : 137.8306492263427
+Ids:1359_4724 From :College Green To :Rotunda, Dublin Bus Head Office Max prediction : -48.780681547541654 Mean prediction : 110.29278317310992
+Ids:4724_4726 From :Rotunda, Dublin Bus Head Office To :Rotunda, Hugh Lane Galllery Max prediction : -46.912878494849586 Mean prediction : 106.4695991384848
+Ids:4726_4508 From :Rotunda, Hugh Lane Galllery To :Dublin, Cathal Brugha Street Max prediction : -28.57341299642127 Mean prediction : 64.8265622564648
+Ids:4508_7402 From :Dublin, Cathal Brugha Street To :Dublin, Gardiner Street Max prediction : -31.672449700500813 Mean prediction : 71.81701772027569
+Ids:7402_4717 From :Dublin, Gardiner Street To :Busáras Max prediction : -37.526267631075484 Mean prediction : 84.8479359998832
+Ids:4717_2499 From :Busáras To :Jury's Inn Custom House Quay Max prediction : 521.0218366382288 Mean prediction : 304.479075196211
+Ids:3669_7399 From :Dublin Airport, Maldron Hotel To :The 3Arena (Point Depot) Max prediction : 2605.296095174394 Mean prediction : 2301.657972504003
+Ids:3669_7611 From :Dublin Airport, Maldron Hotel To :Irish Rail Building North Wall Quay Max prediction : 984.6633998367748 Mean prediction : 876.1289045832971
+Ids:7398_7397 From :Docklands, Convention Centre To :Docklands, Guild Street Jurys Hotel Max prediction : -2942.942149665494 Mean prediction : -1113.0369044639583
+Ids:7397_5140 From :Docklands, Guild Street Jurys Hotel To :Docklands, Connolly Car Park Max prediction : -6834.895126161278 Mean prediction : -2631.590314515009
+Ids:7397_6252 From :Docklands, Guild Street Jurys Hotel To :Jury's Inn Custom House Quay Max prediction : -82.83243058753845 Mean prediction : 99.18891389183517
+Ids:2604_5008 From :Tallaght, Old Bawn Road (Tallaght By-Pass) To :Tallaght, Belgard Square Max prediction : 6473.07011272669 Mean prediction : 6023.680311505043
+Ids:5045_7393 From :Kilmacud, Saint Raphaela's Estate. To :Kilmacud, Marsham Court Max prediction : 737.2916252689158 Mean prediction : 631.8954542989525
+Ids:6252_301 From :Jury's Inn Custom House Quay To :Dublin, Marlborough Street Max prediction : -502.9270354695454 Mean prediction : 962.7582007030819
+Ids:7374_2241 From :Blanchardstown, Total Fitness To :Palmerstown, Lucan Road Max prediction : 697.9521580171457 Mean prediction : 564.7455142097585
+Ids:4401_1813 From :Palmerstown, Lucan Road To :Blanchardstown, Blanchardstown Village (near junction River Road) Max prediction : 592.204692280757 Mean prediction : 529.7309070087208
+Ids:1424_2190 From :Drimnagh, Crumlin Road (Cooley Road) To :Dolphins Barn, Dolphin's Barn Max prediction : 505.7383239898665 Mean prediction : 464.2550747858788
+Ids:2025_6086 From :Kill of The Grange, Abbey Park To :Link Road (Deansgrange Road) Max prediction : -24.454526421296592 Mean prediction : 42.9743826238568
+Ids:6086_7419 From :Link Road (Deansgrange Road) To :Deansgrange, Monkstown Link Road Max prediction : -56.72054218103641 Mean prediction : 58.20968850300334
+Ids:7419_7420 From :Deansgrange, Monkstown Link Road To :Galloping Green, Monkstown Link Road Max prediction : -129.20656540570886 Mean prediction : 67.73085436505352
+Ids:3128_3130 From :Cabinteely, Old Bray Road To :Ballybrack, Bray Road (opp Kilbogget Park) Max prediction : 552.2602095326944 Mean prediction : 440.45068901552764
+Ids:7639_3134 From :Rathmichael, Bride's Glen Bus Stop To :Loughlinstown, Bray Road Max prediction : 2126.1775320804145 Mean prediction : 1296.7095711266008
+Ids:4168_4170 From :Outside Train Station To :Bray, Methodist Church Max prediction : 682.5186051918666 Mean prediction : 412.5159617870016
+Ids:3135_7363 From :Loughlinstown, Loughlinstown Hospital To :Bray, Southern Cross Road (Killarney Road) Max prediction : 664.8947174241481 Mean prediction : 593.3977713337614
+Ids:7368_3143 From :Bray, Giltspur Retail Park Roundabout To :Loughlinstown, Loughlinstown Hospital Max prediction : 608.2644764758676 Mean prediction : 541.1992905828494

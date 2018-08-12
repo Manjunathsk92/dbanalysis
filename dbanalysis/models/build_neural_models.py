@@ -17,7 +17,8 @@ def model_stop(df):
     #        df[f] = 0i
     df = df[df['traveltime'] > 0]
     X = df[df['traveltime'] < df['traveltime'].quantile(0.95)]
-    features = ['rain','temp','vappr','hour','day']
+    X = df[df['traveltime'] > df['traveltime'].quantile(0.05)]
+    features = ['rain','temp','hour','day']
     scaler_X = ss()
     X = scaler_X.fit_transform(df[features])
     scaler_Y = ss()
@@ -63,7 +64,7 @@ def model_route(route,variation,v_num):
                     fail = True
             
             if not fail:
-                with open('/data/neural_models/'+str(stopA)+'_'+str(stopB)+'.bin', 'wb') as handle:
+                with open('/data/neural_models3/'+str(stopA)+'_'+str(stopB)+'.bin', 'wb') as handle:
                     d={'model':model,'X_scaler':X_scaler,'Y_scaler':Y_scaler}
                     pickle.dump(d,handle,protocol = pickle.HIGHEST_PROTOCOL)
                 good_data_frame = [stopA,stopB]
@@ -88,7 +89,7 @@ def model_route(route,variation,v_num):
                     df = stop_tools.stop_data(good_data_frame[0],good_data_frame[1])
                     df['traveltime'] = df['traveltime'] * (distance / good_distance)
                     model,X,features,X_scaler,Y_scaler,Y_real = model_stop(df)
-                    with open('/data/linear_models3/'+str(stopA)+'_'+str(stopB) + '.bin','wb') as handle:
+                    with open('/data/neural_models3/'+str(stopA)+'_'+str(stopB) + '.bin','wb') as handle:
                         d={'model':model,'X_scaler':X_scaler,'Y_scaler':Y_scaler}
                         pickle.dump(d,handle,protocol = pickle.HIGHEST_PROTOCOL)
                     
@@ -102,21 +103,20 @@ def validate_model(model,X,features,Y_scaler,Y_real):
         return False
     elif metrics.r2_score(Y_real,preds) < 0:
         return False
-    elif preds.mean() > 1000:
-        return False
-    elif preds.max() > preds.mean() * 4 :
+    
+    elif preds.max() > preds.mean() * 4 and preds.mean() > 600 :
         return False    
     else:
         return True
 
 def write_error(error):
-    f = open('/data/neural_models/errorlog.log','a')
+    f = open('/data/neural_models3/errorlog.log','a')
     f.write(error)
     f.close()
     
 
 def model_exists(stopA,stopB):
-    model_dir = '/data/neural_models'
+    model_dir = '/data/neural_models3'
     if os.path.exists(model_dir+'/'+str(stopA)+'_'+str(stopB)+'.bin'):
         return True
     else:
@@ -126,12 +126,12 @@ def stop_link_has_data(stopA,stopB):
     df = stop_tools.stop_data(str(stopA),str(stopB))
 
 
-model_dir = '/data/neural_models/'
+model_dir = '/data/neural_models3/'
 import pickle
 import os
 from dbanalysis import stop_tools
 from subprocess import call
-call(['mkdir','/data/neural_models'])
+call(['mkdir','/data/neural_models3'])
 call(['touch',model_dir+'errorlog.log'])
 
 

@@ -211,11 +211,23 @@ class stop_time_table():
             return None
         import numpy as np
         index=[np.searchsorted(self.data[day][link][0:,0],current_time)]
-        
-        if index[0] < self.data[day][link].shape[0]:
-            return self.data[day][link][index]
+        print(len(self.data[day][link]))
+        print(index) 
+        if index[0] < len(self.data[day][link]):
+            return self.data[day][link][index[0]]
         else:
             return None
+    def get_rest_of_departures(self,day,link,current_time):
+        if link not in self.data[day]:
+            return none
+        index1 = [np.searchsorted(self.data[day][link][0:,0],current_time)]
+        index2 = [np.searchsorted(self.data[day][link][0:,0],current_time + 1800)]
+        if index[0] < self.data[day][link].shape[0]:
+            return self.data[day][link][index1[0]:index2[0]]
+        else:
+            return None
+    
+
     def get_next_route(self,day,link,route,current_time):
         import numpy as np
         index = self.data[day][link][np.searchsorted(self.data[day][link][0:,0],current_time)]

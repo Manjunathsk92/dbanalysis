@@ -20,17 +20,24 @@ import pickle
 from dbanalysis.classes.time_tabler_refac import stop_time_table
 import copy
 import pandas as pd
-from sklearn.linear_model import LinearRegression as lr
+from sklearn.neural_network import MLPRegressor as mlp
+from sklearn.neural_network import MLPRegressor as mlp
+from sklearn.preprocessing import MinMaxScaler as mms
+from sklearn.preprocessing import StandardScaler as ss
 class stop():
 
-    def __init__(self,stop_id,stop_info):
+    def __init__(self,stop_id,stop_info,write_errors=False):
         self.stop_id = str(stop_id)
+        self.stop_info = stop_info
+        self.write_errors = True
         self.lat = stop_info['lat']
         self.lon = stop_info['lon']
         self.timetable = stop_time_table()
         self.links = set()
         self.Y_scalers = {}
         self.X_scalers = {}
+        self.use_multipliers = {}
+        self.multipliers = {}
         self.link_distances = {}
         self.foot_links = {}
         self.models = {}
@@ -39,17 +46,22 @@ class stop():
             try:
                 with open('/data/neural_models/'+self.stop_id+'_'+str(link)+'.bin','rb') as handle:
                     d = pickle.load(handle)
-                handle.close()    
+                handle.close()
+                if 'multiplier' in d:
+                    self.use_multipliers[str(link)] = True
+                    self.multipliers[str(link)] = d['multiplier']
+                else:
+                    self.use_multipliers[str(link)] = False    
                 self.models[str(link)] = d['model']
-                self.Y_scalers[str(link)] = d['y-scaler']
-                self.X_scalers[str(link)] = d['x-scaler']
+                self.Y_scalers[str(link)] = d['Y_scaler']
+                self.X_scalers[str(link)] = d['X_scaler']
                 del(d)
                 self.links.add(str(link))
                 self.link_distances[link] = distance
                 return True
             except Exception as e:
                 print(e)
-                
+                input() 
                 print('no model for',self.stop_id,link)
                 return False
         else:
@@ -57,30 +69,56 @@ class stop():
 
     def predict_multiple(self,df,link):
         
-        features = ['rain','temp','vappr','day','hour','actualtime_arr_from']
+        features = ['rain','temp','vappr','hour','day']
         df['hour'] = df['actualtime_arr_to'] //3600
         df['actualtime_arr_from'] = df['actualtime_arr_to'] 
         X = self.X_scalers[link].transform(df[features])
-        traveltime = self.models[link].predict(df[features])
+        traveltime = self.models[link].predict(X)
         traveltime = self.Y_scalers[link].inverse_transform(traveltime)
+        if self.use_multipliers[str(link)]:
+            traveltime = traveltime * self.multipliers[str(link)]
+        a=0
         if traveltime.min() <= 0:
             #should ideally just correct the inaccurate predictions, but this is going to have to suffice instead.
-            m = traveltime.mean()
-            if m > 0:
-                traveltime = m
-            else:
-                # add method here for just using the distance
-                traveltime = 0
+            print('number of predicts:',len(traveltime))
+            #print('hours:',df['hour'].unique())
+            print('number of negatives:', len(traveltime[traveltime < 0]))
+            #print('mean traveltime:',traveltime.mean())
+            #print('percent lees than zero:',len(traveltime[traveltime <0]) / (len(traveltime) + 1))
+            if self.write_errors and 3 > 1:
+                data = {'error':[self.stop_id, link,traveltime.min(),traveltime.mean()]}
+                f=open('modelerrors.log','a')
+                import json
+                string = json.dumps(data)
+                f.write(string + '\n')
+                f.close()
+             
+            #print ( len(traveltime[traveltime < 0]))
             
-            #print(traveltime.min(),traveltime.mean())
-            #print('Bad prediction for', self.stop_id,link)
-            #input()
-        elif traveltime.max() > 500:
+            if len(traveltime[traveltime > 0]) > 0:
+                
+                m = traveltime[traveltime > 0].mean()
+                traveltime[traveltime < 0] = m
+            else:
+                
+                
+                a = (self.link_distances[link] / 30) * 3600
+                print(a)
+                traveltime = [a for a in range(len(traveltime))]  
+        else:
+            pass
+        if max(traveltime) > 500:
             #print(traveltime.max(),traveltime.mean())
             #print('Obscene prediction for',self.stop_id,link)
             #input()
             print(self.link_distances[str(link)] / (traveltime.mean()/3600),traveltime.mean())
-            
+            data = {'error':[self.stop_id, link,traveltime.max(),traveltime.mean()]}
+            f=open('modelerrors.log','a')
+            import json
+            string = json.dumps(data)
+            f.write(string + '\n')
+            f.close()
+                
         df['actualtime_arr_to'] = df['actualtime_arr_from'] + traveltime
         del(traveltime)
         del(X)

@@ -30,6 +30,7 @@ class stop():
         self.link_distances = {}
         self.foot_links = {}
         self.models = {}
+        
     def add_link(self,link,distance):
         if link not in self.links:
             try:
@@ -55,9 +56,11 @@ class stop():
             df['hour'+str(i)] = df['hour'] ** i
         
         df['actualtime_arr_from'] = df['actualtime_arr_to']
+        
         traveltime = self.models[link].predict(df[features])
        
         if traveltime.min() <= 0:
+            print('less than zero')
             m = traveltime.mean()
             if m > 0:
                 traveltime = m

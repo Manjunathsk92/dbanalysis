@@ -13,6 +13,7 @@ class weather_getter():
     
     def get_weather(self):
         df_weather=self.weather_5days
+        #print(df_weather)
         df_weather['date']=pd.to_datetime(df_weather['date'])
         #cols=['weather_date', 'rain', 'temp', 'vappr', 'rhum', 'msl']
         #i=0
