@@ -17,7 +17,7 @@ Need to add support for routes
 
 """
 import pickle
-from dbanalysis.classes.time_tabler_refac import stop_time_table
+from dbanalysis.classes.time_tabler_refac2 import stop_time_table
 import copy
 import pandas as pd
 from sklearn.neural_network import MLPRegressor as mlp

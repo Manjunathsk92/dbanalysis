@@ -76,15 +76,12 @@ class simple_network():
             transfers = pickle.load(handle)
         handle.close()
         for n in self.nodes:
-            for foot_link in self.nodes[n].foot_links:
-                time = self.nodes[n].foot_links[foot_link]
-                if foot_link not in self.weights:
-                    self.weights[foot_link] = {}
-                self.weights[foot_link]['w'] = [inf,inf,False]
-                if n not in self.graph:
-                    self.graoh[n] = set()
-                self.graph[n].add(tuple((foot_link,'w',time)))
-                 
+            try:
+                self.nodes[n].foot_links = {}
+                self.nodes[n].serves = {i:[] for i in self.stops_dict[n]['serves']} 
+                
+            except:
+                pass
         for stop in transfers:
             if stop not in self.graph:
                 self.graph[stop] = set()
@@ -106,15 +103,10 @@ class simple_network():
         self.graph_lock = False
         from math import inf
         import pickle
-        #load a graph object
         with open('/home/student/db/network/graphobject.bin','rb') as handle:
             self.graph = pickle.load(handle)
-        handle.close()
-        #load the graph weights
         with open('/home/student/db/network/weightsobject.bin','rb') as handle:
             self.weights = pickle.load(handle)
-        handle.close()
-        #most of the following code is deprecated since we switched to using the graph object.
         for n in self.nodes:
             self.nodes[n].back_links = []
             self.nodes[n].switch_weight = inf
@@ -134,12 +126,31 @@ class simple_network():
         #matrix = pd.get_dummies(matrix,columns=['day'])
         #matrix['day'] = days
         matrix['actualtime_arr_to'] = matrix['actualtime_arr_from']
-        #for every step in the route, predict and update the dataframe
+        
+        #features = ['rain','temp','vappr','hour','hour2','hour3','hour4','day','day2','day3','day4']
+        #count = 0
+        #df = pd.DataFrame({'temp':[10],'vappr':[10],'rain':[0.08],'hour':[5],'day':[4]})
+        #to_concat = []
+        #import copy
+        #for day in range(7):
+        #    for hour in range(5,16):
+        #        af = copy.deepcopy(df)
+        #        af['day'] = day
+                
+        #        df['hour'] = hour
+        #        to_concat.append(af)
+        #matrix = pd.concat(to_concat,axis=0)
+        #matrix['actualtime_arr_to'] = matrix['hour'] * 3600
+        #matrix['actualtime_arr_from'] = matrix['hour'] * 3600 
+        #matrix['routeid'] = '15'
+        #for i in range(2,5):
+        #    matrix['hour'+str(i)] = matrix['hour'] ** i
+        #    matrix['day'+str(i)] = matrix['day'] ** i
+        
         for i in range(0, len(pattern) -1):
             
             stopA = str(pattern[i])
             stopB = str(pattern[i+1])
-            #predictions are automatically stored in stop time tables
             matrix = self.nodes[stopA].predict_multiple(matrix,stopB)
         
         del(matrix)
@@ -151,30 +162,25 @@ class simple_network():
         from dbanalysis.classes import weather_getter
         self.total_routes = 0
         self.failed_routes = 0
-        # grab a five day weather forecast
         w_getter = weather_getter.weather_getter()
         weather = w_getter.get_weather()
         import datetime
-        #get current datetime
         dt = datetime.datetime.now()
         count = 0
-        # for every variation in every route, 
         for route in self.routes:
-            if len(self.routes[route]) < 1:
+            if len(route) < 1:
                 continue            
             times = self.time_tabler.get_dep_times_five_days(route,dt)
-            # get a timetable describing every scheduled departure time for the first stop on that route
-            # over the next five days
-            if len(time) > len(self.routes[route]):
-                continue
+            
             for variation in times:
                 self.total_routes +=1
                 #if not self.selector.get_unavailable(route,int(variation)):
                 try:    
                     count +=1
+                    print(count,route+'_'+str(variation))
                     X=times[variation]
                     
-                    # merge with weather data to add weather features.
+                        # merge with weather data to add weather features.
                     #X['matrix'] = pd.merge(X['matrix'],weather[['day','hour','rain','temp','vappr']],on = ['day','hour'])
                     X['matrix']['rain']=0.08
                     X['matrix']['temp']=10.0
@@ -183,15 +189,20 @@ class simple_network():
                     
                     
                     self.run_route(X['matrix'],X['pattern'])
-           
-                #unfortunately, the routes in 'routes' and the routes in the time tabler differ slightly
-                #the time table routes include a few variation we haven't managed to model.
-                #these will break.
-                #Unfortuntely, there wasn't time to properly address this problem.
+                    try:
+                        pass
+                    except Exception as e:
+                        print(e)
+                
                 except Exception as e:
                     print(e)
                     self.failed_routes +=1
-         
+            try:
+                pass    
+            except Exception as e:
+                
+                print(e,'broken timetabler',route)
+                pass
         
     def quick_predict(self,day,route,v_num,stopA,stopB,time):
         """
@@ -203,14 +214,9 @@ class simple_network():
         start = arr.index(int(stopA))
         end = arr.index(int(stopB)) - 1
         link = str(arr[start+1])
-        # look up the first arrival for a on this route that exceeds or equals the given time
         departure_time = self.nodes[str(stopA)].timetable.get_next_departure_route(day,link,time,route)[0]
         if departure_time is None:
             return None
-        # Cycle through the route looking up the departure and arrival times for each stop segment
-        #unfortunately this can still break occasionally, as we haven't properly sorted routes and variations
-        # In addition, there might not be a next bus. In that case we return None and it is hanled by the
-        # Django app.
         try:
             for i in range(start,end):
                 resp = self.get_next_stop(str(arr[i]),str(arr[i]+1))
@@ -224,13 +230,9 @@ class simple_network():
     def get_next_stop(self,stopA,stopB,day,time):
         """
         Get first time and route from stopA to stopB for given day and arrival time at bus stop.
-        Method is redundant and should be deleted.
         """
         return self.nodes[stopA].timetable.get_next_departure(day,stopB,time)
     def get_get_next_departure_route(self,day,stopA,link,route,time):
-        """
-        Does the same, but only considers the next route
-        """
         return self.nodes[stopA].timetable.get_next_route(day,link,route,time)
     
     def dijkstra(self,day,current_time,origin_lat,origin_lon,end_lat,end_lon,text_response=True):
@@ -242,27 +244,18 @@ class simple_network():
             #block if/while routefinding algorithm is already running. Not too sure how django works in relation to this.
             pass
         import copy
-        #make copies of the graph and weight objects
         graph = copy.deepcopy(self.graph)
         weights = copy.deepcopy(self.weights)
-        #graph lock is probably no longer necessary
         self.graph_lock = True
-        #add user location and destination to the graph
-        graph,weights,finish_stops = self.add_user_nodes(origin_lat,origin_lon,end_lat,end_lon,current_time,graph,weights)
-        #solve the graph
-        solved,graph,weights,back_links = self.main_dijkstra(day,current_time,graph,weights,finish_stops)
+        graph,weights = self.add_user_nodes(origin_lat,origin_lon,end_lat,end_lon,current_time,graph,weights)
+        solved = self.main_dijkstra(day,current_time,graph,weights)
         if not solved:
-            #if no solution, will be handled as an error by Django app
             return None
         else:
-            #walk back the route fastest route, creating a response object
-            response,stop_markers = self.walk_back_dijkstra(origin_lat,origin_lon,end_lat,\
-                                end_lon,current_time,graph,weights,back_links)
-            #clean up the graph. Actually no longer necessary
+            response,stop_markers = self.walk_back_dijkstra(origin_lat,origin_lon,end_lat,end_lon,current_time)
             tear_down = Thread(target=self.tear_down_dijkstra)
-            #tear_down.start()
+            tear_down.start()
             if text_response:
-                #get a text response.
                 text = self.get_directions(response)
                 return {'data':response,'text':text,'stop_markers':stop_markers}
             else:
@@ -270,9 +263,7 @@ class simple_network():
 
     def get_directions(self,resp):
         """
-        Create readable text version of dijkstra response.
-        Code is unnecessarily complex. Basically just iterates through the response,
-        Recording in text every time the route is switched (e.g from 'walking' to '15A')
+        Create readable text version of dijkstra response
         """
         text=[]
         current_route = 'walking'
@@ -308,10 +299,6 @@ class simple_network():
                 time = current_stop['time']
         return text
     def dijkstra_shape(self,data):
-        """
-        Get the full route shape to be displayed by the frontend.
-        Basically just cycles through the response, looking up the required shapes.
-        """
         walking_bits = []
         bus_bits = []
         current_walking_bit = []
@@ -355,15 +342,10 @@ class simple_network():
 
         pass
         
-    def main_dijkstra(self,day,current_time,graph,weights,finish_stops,walking_penalty=500,bus_penalty=500):
+    def main_dijkstra(self,day,current_time,graph,weights,walking_penalty=500,bus_penalty=500):
         """
         Actual implementation of dijkstra's algorithm on time dependant(ish) graph
-        This is... legitimately... a disaster.
-        In this implementation, every 'routeid' between stops essentially becomes its own edge and also its own node.
-        A 'stop' becomes a point where a bunch of these nodes have connecting edges, and the time cost for them is 0
-        Though there is a 'transfer' cost instead.
-        In addition, this version basically optimizes for 'least transfers', and only uses 'time' as a tie breaker,
-        when deciding what to pull out of the heap first.
+        This is... legitimately... a disaster
         """
         
         import heapq
@@ -379,127 +361,86 @@ class simple_network():
             
             current_time = x[1]
             current_node = x[2]
-            
+            print(current_node)
             current_route = x[3]
             ws = weights[current_node][current_route]
-            if current_node == 'end':
-                print('solved with',transfers,'transfers')
-                solved=True
-                weights['end']['w'] = [transfers,current_time,True] 
-                break
-            if ws[2] or current_node not in graph:
+            
+            if ws[2]:
                 print('weighted out')
                 continue
-                
+            if current_node == 'end':
+                break
             else:
                 weights[current_node][current_route][2] = True
              
             links = graph[current_node]
-         
+            print(links)
             for link in links:
                 link_name = link[0]
-                
-                    
                 route = link[1]
                 if weights[link_name][route][2]:
                     continue
                 if route == 'w':
-                    
-                    
-                    time = current_time+link[2]
-                    if link[2] < 0:
-                        print(link[2])
-                        input()
-                    if time < current_time:
-                        print('negative time')
-                        input()
+                    time = link[2]
                 else:
                     time = self.next_stop_route(day,current_time,current_node,link_name,route)
-                     
-                         
-                    
                     if time is None:
                         continue
-                    
-                    if time[0] > current_time + (20 * 60):
-                        continue
-                    time = time[1]
-                    if time < current_time:
-                        print('negative time')
-                        input()
                 number = transfers
                 if route != current_route:
                     number += 1
-                if route == 'w' and current_route == 'w':
-                    number = round(number + 0.01,2)
-                            
-                
-                if number <= weights[link_name][route][0] and time < weights[link_name][route][1]:
+                    print('weight reached',number)
+                if number < weights[link_name][route][0] and time < weights[link_name][route][1]:
                     weights[link_name][route] = [number,time,False] 
-                    
-                      
                     heapq.heappush(to_visit,[number,time,link_name,route])
                     if link_name not in back_links:
                         back_links[link_name] = {}
-                        back_links[link_name] = {route:[current_node,number,current_time]}
-                    else:
-                        back_links[link_name][route] = [current_node,number,current_time]
-        return solved,graph,weights,back_links
+                    back_links[link_name] = {route:[current_node,number,current_time]}
 
-    def walk_back_dijkstra(self,origin_lat,origin_lon,end_lat,end_lon,start_time,graph,weights,back_links):
+        return solved
+
+    def walk_back_dijkstra(self,origin_lat,origin_lon,end_lat,end_lon,start_time):
         """
         Create a response object from solved graph
         """
-        transfer_weight = weights['end']['w'][0]
-        time_weight = weights['end']['w'][1]
-        
+        weight = self.nodes['end'].weight
         current_node = 'end'
         stop_markers = []
         output = [{'id':'end','route':'walking',\
                 'data':{'lat':end_lat,'lon':end_lon,\
-                        'name':'destination'},'time':time_weight}]
+                        'name':'destination'},'time':weight}]
         stop_markers.append(output[0])
         current_route = 'walking'
-        print(transfer_weight)
-        min_time_weight = time_weight
-        min_transfer_weight = transfer_weight
-        print(transfer_weight)
-        while transfer_weight > 0:
-            print(min_time_weight,min_transfer_weight)
-            print(current_node) 
-             
-            for r_name in back_links[current_node]:
-                link = back_links[current_node][r_name]
-                print(r_name,link)
-                input()
+        while weight > start_time:
+        
+            minweight = inf
+          
+              
+            for link in self.nodes[current_node].back_links:
                 stop_id = link[0]
-                if link[1] <= min_transfer_weight and link[2] <= min_time_weight:
-                    min_transfer_weight = link[1]
-                    
-                    min_time_weight = link[2]
+                if self.nodes[stop_id].weight < minweight:
+                    minweight = self.nodes[stop_id].weight
                     new_curnode = stop_id
-                    route = r_name
+                    route = link[1]
                     if route == 'w':
                         route = 'walking'
-                    transfer_weight = min_transfer_weight
-                    time_weight = min_time_weight
-            print(new_curnode)
+                    weight = minweight
+             
             if new_curnode != 'begin':
                 output.append({'data':self.stops_dict[new_curnode],\
                 'id':new_curnode,\
                 'route':route,\
-                'time':time_weight})
+                'time':weight})
             else:  
                 output.append({'id':'begin','data':\
                 {'lat':origin_lat, 'lon':origin_lon,'stop_name':'origin'},\
                 'route':'walking',\
                 'time':start_time})
-                break
             if route != current_route:
                 current_route = route
                 stop_markers.append(output[-1])
             current_node = new_curnode
-            
+            weight = minweight
         if output[-1] != stop_markers[-1]:
             stop_markers.append(output[-1])
         return output,stop_markers
@@ -518,10 +459,8 @@ class simple_network():
         self.closest_stops_to_destination = [stop for stop in\
                                     self.stop_finder.find_closest_stops(end_lat,end_lon)\
                                     if stop['stop_id'] in self.nodes]
-        finish_stops = set()
         for stop in self.closest_stops_to_destination:
-            finish_stops.add(stop['stop_id'])
-            graph[stop['stop_id']].add(tuple(('end','w',stop['distance']/5)))
+            graph[stop['stop_id']].add(tuple(('end','w')))
         weights['end'] = {'w':[inf,inf,False]}       
         weights['begin'] = {'w':[0,0,False]} 
         
@@ -534,15 +473,12 @@ class simple_network():
         for stop in origin_stops:
             graph['begin'].add(tuple((stop,'w',origin_stops[stop])))
             weights[stop]['w'] = [inf,inf,False]
-        return graph,weights,finish_stops
-    
+        return graph,weights
     def next_stop_route(self,day,time,stopA,stopB,route):
         return self.nodes[stopA].timetable.get_next(day,stopB,time,route)  
-    
     def tear_down_dijkstra(self):
         """
         Run as thread. Resets the graph so dijkstra can be run again..
-        Now redundant in this version of the network.
         """
         for node in self.nodes:
             self.nodes[node].back_links = []
@@ -553,7 +489,6 @@ class simple_network():
         del(self.nodes['end'])
         del(self.nodes['begin'])
         self.graph_lock = False
-    
     def get_stop_time_table(self,stop,dt):
         """
         Concat link time tables,sort them, and pack them into dictionary objects.
@@ -564,21 +499,16 @@ class simple_network():
         day = int(dt.weekday())
         import numpy as np
         import datetime
-        # look up the time tables, and concatenate them
         timetables = self.nodes[str(stop)].timetable.data[day]
-        timetables = np.concatenate([timetables[link][route] for route in timetables[link]\
-                                                            for link in timetables],axis=0)
+        timetables = np.concatenate([timetables[link] for link in timetables],axis=0)
         
         seconds = (dt - dt.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
-        #sort the time tables by arrival time
         timetables = timetables[timetables[:,0].argsort()]
         
         index = np.searchsorted(timetables[0:,0],seconds)
-        # if there's no timetables information after the given time, return nothing
         if index > timetables.shape[0]:
             return None
         else:
-            #pack the time table information into a response that Django can JSON serialize
             response = []
             
             for i in range(index,timetables.shape[0]):
@@ -591,7 +521,6 @@ class simple_network():
 class dummy():
     """
     Dummy node for user location and destination
-    No longer used
     """
     
     def __init__(self):
@@ -616,10 +545,7 @@ class dummy():
 #with open('simple_network_concated','wb') as handle:
 #    pickle.dump(n.nodes,handle,protocol=pickle.HIGHEST_PROTOCOL)
 if __name__ == '__main__':
-    import pickle
-    """
-    Lots of code for testing the network. :)
-    """
+    #import pickle
     #n = simple_network()
     #with open('/data/neuraldump.bin','wb') as handle:
     #    import pickle
@@ -631,7 +557,7 @@ if __name__ == '__main__':
     #with open('simple_network_dump.bin','rb') as handle:
     #    n=pickle.load(handle)
     #handle.close()
-    #import pickle
+    import pickle
     #with open('/data/neuraldump.bin','rb') as handle:
     
     #handle.close()
@@ -648,22 +574,17 @@ if __name__ == '__main__':
     #n.prepare_dijkstra()
     #n.properly_add_foot_links()
     #handle.close()
-    #with open('/data/done.bin','rb') as handle:
-    #    n=pickle.load(handle)
-    #handle.close()
-    #n.generate_time_tables()
-    #for node in n.nodes:
-    #    n.nodes[node].timetable.concat_and_sort()
     with open('/data/done.bin','rb') as handle:
         n=pickle.load(handle)
-    
     handle.close()
+    #for node in n.nodes:
+    #    n.nodes[node].timetable.concat_and_sort()
+    #with open('/data/done.bin','wb') as handle:
+    #    pickle.dump(n,handle,protocol = pickle.HIGHEST_PROTOCOL)
+    #handle.close()
     #n.prepare_dijkstra()
     #n.properly_add_foot_links()
-    resp=n.dijkstra(1,36000,53.3083,-6.2236,53.3660,-6.2045)
-    print(resp['text'])
-    #for i in resp['data']:
-    #    print(i)    
+    print(n.dijkstra(6,54000,53.3786,-6.0570,53.3660,-6.2045))
     #import pickle
     #import pickle
     #with open('simple_network_dump.bin','rb') as handle:
