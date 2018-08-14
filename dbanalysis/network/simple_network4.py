@@ -80,9 +80,9 @@ class simple_network():
                 time = self.nodes[n].foot_links[foot_link]
                 if foot_link not in self.weights:
                     self.weights[foot_link] = {}
-                self.weights[foot_link]['w'] = [inf,inf,False]
+                self.weights[foot_link]['w'] = [inf,inf,inf,inf,False]
                 if n not in self.graph:
-                    self.graoh[n] = set()
+                    self.graph[n] = set()
                 self.graph[n].add(tuple((foot_link,'w',time)))
                  
         for stop in transfers:
@@ -95,7 +95,7 @@ class simple_network():
                     self.graph[stop].add(tuple((stop2,'w',transfers[stop][stop2])))
                     if stop2 not in self.weights:
                         self.weights[stop2] = {}
-                    self.weights[stop2]['w'] = [inf,inf,False]
+                    self.weights[stop2]['w'] = [inf,inf,inf,inf,False]
                     
                         
          
@@ -165,7 +165,7 @@ class simple_network():
             times = self.time_tabler.get_dep_times_five_days(route,dt)
             # get a timetable describing every scheduled departure time for the first stop on that route
             # over the next five days
-            if len(time) > len(self.routes[route]):
+            if len(times) > len(self.routes[route]):
                 continue
             for variation in times:
                 self.total_routes +=1
@@ -355,7 +355,7 @@ class simple_network():
 
         pass
         
-    def main_dijkstra(self,day,current_time,graph,weights,finish_stops,walking_penalty=500,bus_penalty=500):
+    def main_dijkstra(self,day,start_time,graph,weights,finish_stops,time_weight=1,transfer_weight=2000,walking_weight=1,max_bus_wait=600):
         """
         Actual implementation of dijkstra's algorithm on time dependant(ish) graph
         This is... legitimately... a disaster.
@@ -372,78 +372,92 @@ class simple_network():
         back_links = {}
         solved = False
         # the heap is sorted by the number of switches made, and the arrival time
-        heapq.heappush(to_visit,[0,current_time,'begin','w'])
+        #in the heap, field 1 is the total weight
+        #field 2 is the current time
+        #field 3 is the number of transfers
+        #field four is the amount of walking done
+        #field five is the name of the node
+        #field 6 is the route/travel method
+        heapq.heappush(to_visit,[0,start_time,0,0,'begin','t-na'])
         while len(to_visit) > 0:
-            x = heapq.heappop(to_visit)
-            transfers = x[0]
+            #assign named variables to various attributes of this node
+            w = heapq.heappop(to_visit)
+            weight = w[0]
+            current_time = w[1]
+            transfers = w[2]
+            walking_sections = w[3]
+            current_node = w[4]
+            current_route = w[5]
             
-            current_time = x[1]
-            current_node = x[2]
-            
-            current_route = x[3]
-            ws = weights[current_node][current_route]
+            if current_route[0] != 't': 
+                ws = weights[current_node][current_route]
+                visited = ws[4]
+            else:
+                visited = False
             if current_node == 'end':
                 print('solved with',transfers,'transfers')
+                print(weight,current_time,transfers,walking_sections)
+                
                 solved=True
-                weights['end']['w'] = [transfers,current_time,True] 
+                weights['end']['w'] = [weight,current_time,transfers,walking_sections,True] 
                 break
-            if ws[2] or current_node not in graph:
-                print('weighted out')
+            if visited or current_node not in graph:
                 continue
                 
-            else:
-                weights[current_node][current_route][2] = True
+            elif current_route[0]!= 't':
+                weights[current_node][current_route][4] = True
              
             links = graph[current_node]
-         
+            if current_route[0] != 't':
+                #push a transfer for this stop
+                new_weight = ((current_time - start_time)*time_weight) + (transfers+1 * transfer_weight) + (walking_sections * walking_weight)
+                heapq.heappush(to_visit,[new_weight,current_time,transfers+1,walking_sections,current_node,'t'+current_route])
+            elif current_route [0] == 't':
+                cant_take = current_route[1:]
             for link in links:
                 link_name = link[0]
-                
-                    
-                route = link[1]
-                if weights[link_name][route][2]:
-                    continue
-                if route == 'w':
-                    
-                    
-                    time = current_time+link[2]
-                    if link[2] < 0:
-                        print(link[2])
-                        input()
-                    if time < current_time:
-                        print('negative time')
-                        input()
-                else:
-                    time = self.next_stop_route(day,current_time,current_node,link_name,route)
-                     
-                         
-                    
-                    if time is None:
-                        continue
-                    
-                    if time[0] > current_time + (20 * 60):
-                        continue
-                    time = time[1]
-                    if time < current_time:
-                        print('negative time')
-                        input()
+                walking = walking_sections
                 number = transfers
-                if route != current_route:
-                    number += 1
-                if route == 'w' and current_route == 'w':
-                    number = round(number + 0.01,2)
-                            
+                route = link[1]
+                time = current_time
+                if weights[link_name][route][4] or route == cant_take:
+                    continue
+                elif route == current_route or current_route[0] == 't':
+                    if route == 'w':
+                        time = current_time + link[2] + 5
+                        if link[2] < 0:
+                            pass
+                        walking += link[2]
+                    else:
+                        time = self.next_stop_route(day,current_time,current_node,link_name,route)
+                        if time is None:
+                            continue
+                        
+                        elif time[1] - current_time > max_bus_wait:
+                            continue
+                        else:
+                            time = time[1]
+                            if time < current_time:
+                                pass 
+                else:
+                    continue
+                # here we need a proper formula to balance time,transfers, and walking sections      
+                new_weight = ((time - start_time) * time_weight) + (number * transfer_weight) + (walking * walking_weight)
                 
-                if number <= weights[link_name][route][0] and time < weights[link_name][route][1]:
-                    weights[link_name][route] = [number,time,False] 
+                if new_weight < weights[link_name][route][0] and new_weight > weight:
+                    # here we need a proper formula for balancing walking sections, time travelled, and number of transfer
+                    weights[link_name][route] = [new_weight,time,number,walking_sections,False] 
                     
                       
-                    heapq.heappush(to_visit,[number,time,link_name,route])
-                    if link_name not in back_links:
+                    heapq.heappush(to_visit,[new_weight,time,number,walking,link_name,route])
+                    route_to_write = current_route
+                    if current_route[0] == 't':
+                        route_to_write = current_route[1:]
+                    if link_name and link_name not in back_links and link_name != current_node:
                         back_links[link_name] = {}
-                        back_links[link_name] = {route:[current_node,number,current_time]}
+                        back_links[link_name] = {route:[current_node,weight,current_time,route_to_write]}
                     else:
-                        back_links[link_name][route] = [current_node,number,current_time]
+                        back_links[link_name][route] = [current_node,weight,current_time,route_to_write]
         return solved,graph,weights,back_links
 
     def walk_back_dijkstra(self,origin_lat,origin_lon,end_lat,end_lon,start_time,graph,weights,back_links):
@@ -464,26 +478,35 @@ class simple_network():
         min_time_weight = time_weight
         min_transfer_weight = transfer_weight
         print(transfer_weight)
+        previous_node = 'end'
+        path = set()
+        min_transfer_weight = inf
+        for r in back_links[current_node]:
+            if back_links[current_node][r][1] < min_transfer_weight:
+                min_transfer_weight = back_links[current_node][r][1]
+                r_name = r
         while transfer_weight > 0:
-            print(min_time_weight,min_transfer_weight)
-            print(current_node) 
-             
-            for r_name in back_links[current_node]:
-                link = back_links[current_node][r_name]
-                print(r_name,link)
-                input()
-                stop_id = link[0]
-                if link[1] <= min_transfer_weight and link[2] <= min_time_weight:
-                    min_transfer_weight = link[1]
+            #input()
+            #print(current_node)
+           
+            link = back_links[current_node][r_name]
+            #print(link)
+                 
+            stop_id = link[0]
+            #print(current_node,stop_id)
+            
+           
+            min_transfer_weight = link[1]
                     
-                    min_time_weight = link[2]
-                    new_curnode = stop_id
-                    route = r_name
-                    if route == 'w':
-                        route = 'walking'
-                    transfer_weight = min_transfer_weight
-                    time_weight = min_time_weight
-            print(new_curnode)
+            min_time_weight = link[2]
+            new_curnode = stop_id
+            route = r_name
+            if route == 'w':
+                route = 'walking'
+            transfer_weight = min_transfer_weight
+            time_weight = min_time_weight
+            r_name = link[3]
+            path.add(tuple((new_curnode,r_name)))
             if new_curnode != 'begin':
                 output.append({'data':self.stops_dict[new_curnode],\
                 'id':new_curnode,\
@@ -498,8 +521,9 @@ class simple_network():
             if route != current_route:
                 current_route = route
                 stop_markers.append(output[-1])
-            current_node = new_curnode
             
+            previous_node = current_node
+            current_node = new_curnode 
         if output[-1] != stop_markers[-1]:
             stop_markers.append(output[-1])
         return output,stop_markers
@@ -522,8 +546,8 @@ class simple_network():
         for stop in self.closest_stops_to_destination:
             finish_stops.add(stop['stop_id'])
             graph[stop['stop_id']].add(tuple(('end','w',stop['distance']/5)))
-        weights['end'] = {'w':[inf,inf,False]}       
-        weights['begin'] = {'w':[0,0,False]} 
+        weights['end'] = {'w':[inf,inf,inf,inf,False]}       
+        weights['begin'] = {'w':[0,0,0,0,False]} 
         
         origin = dummy()
         origin.switch_weight = start_time
@@ -533,7 +557,7 @@ class simple_network():
         graph['begin'] = set()
         for stop in origin_stops:
             graph['begin'].add(tuple((stop,'w',origin_stops[stop])))
-            weights[stop]['w'] = [inf,inf,False]
+            weights[stop]['w'] = [inf,inf,inf,inf,False]
         return graph,weights,finish_stops
     
     def next_stop_route(self,day,time,stopA,stopB,route):
@@ -620,7 +644,10 @@ if __name__ == '__main__':
     """
     Lots of code for testing the network. :)
     """
-    #n = simple_network()
+    BUILD=False
+    if BUILD:
+    
+        n = simple_network()
     #with open('/data/neuraldump.bin','wb') as handle:
     #    import pickle
     #    pickle.dump(n,handle,protocol=pickle.HIGHEST_PROTOCOL)  
@@ -645,22 +672,26 @@ if __name__ == '__main__':
     #n.properly_add_foot_links()
     #with open('/data/dddump.bin','rb') as handle:
     #    n=pickle.load(handle)
-    #n.prepare_dijkstra()
-    #n.properly_add_foot_links()
+        n.prepare_dijkstra()
+        n.properly_add_foot_links()
     #handle.close()
     #with open('/data/done.bin','rb') as handle:
     #    n=pickle.load(handle)
     #handle.close()
-    #n.generate_time_tables()
-    #for node in n.nodes:
-    #    n.nodes[node].timetable.concat_and_sort()
+        n.generate_time_tables()
+        for node in n.nodes:
+    
+            n.nodes[node].timetable.concat_and_sort()
+        with open('/data/done.bin','wb') as handle:
+            pickle.dump(n,handle,protocol=pickle.HIGHEST_PROTOCOL)
+    
     with open('/data/done.bin','rb') as handle:
         n=pickle.load(handle)
     
     handle.close()
     #n.prepare_dijkstra()
     #n.properly_add_foot_links()
-    resp=n.dijkstra(1,36000,53.3083,-6.2236,53.3660,-6.2045)
+    resp=n.dijkstra(1,36000,53.3219,-6.2655,53.3660,-6.2045)
     print(resp['text'])
     #for i in resp['data']:
     #    print(i)    

@@ -14,11 +14,19 @@ for route in routes:
             stopB = str(variation[i+1])
             if stopA not in graph:
                 graph[stopA] = set()
+            #every link/route pair is a tuple for the given stop
             graph[stopA].add(tuple((stopB,route)))
+            #not included here, but walking nodes will also include the time taken to walk that distance
 
             if stopB not in weights:
                 weights[stopB] = {}
-            weights[stopB][route] = [inf,inf,False]
+            #we have five fields here.
+            #the first field is the total weight 
+            #the second field is the number of transfers
+            #the third feild is the amount of walking time
+            #the fourth field is the total time taken
+            #the last field represents whether this node has being visited or not
+            weights[stopB][route] = [inf,inf,inf,inf,False]
 
 import pickle
 with open('graphobject.bin','wb') as handle:
