@@ -204,27 +204,33 @@ class stop_time_table():
                 temp = df[df['day']==d]
                 print(len(temp))
                 for r in temp['routeid'].unique():     
-                    self.data[d][link][r] = temp[temp['routeid']==r][['actualtime_arr_from','actualtime_arr_to']].values            
+                    self.data[d][link][r] = temp[temp['routeid']==r][['actualtime_arr_from','actualtime_arr_to','routeid']].values            
                 del(temp)
             del(df)
         del(self.to_concat)
 
  
     def get_next(self,day,link,current_time,route):        
+        if day not in self.data:
+            print('missing day')
+            return None
         if link not in self.data[day]:
             print([l for l in self.data[day]])
-            print('no link')
+            print('missing link')
             return None
         if route not in self.data[day][link]:
-            print('no route')
+            print('missing route')
             return None
         import numpy as np
-        index=[np.searchsorted(self.data[day][link][route][0:,0],current_time)]
-        
+        try:
+            index=[np.searchsorted(self.data[day][link][route][0:,0],current_time)]
+        except:
+            print('broken for this route')
+            return None
         if index[0] < len(self.data[day][link][route]):
             return self.data[day][link][route][index[0]]
         else:
-            return None            
+            return None       
 
     def get_next_departure(self,day,link,current_time):        
         if link not in self.data[day]:

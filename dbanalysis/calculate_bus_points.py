@@ -5,11 +5,14 @@ import pandas as pd
 import mysql.connector
 single_login_points = 10
 points_per_km = 10
+print("Begining run for: {} ".format(time) )
 db_connection = mysql.connector.connect(user='dublinbus', password='Ucd4dogs!',
                                   host='127.0.0.1',
                                  database='researchpracticum')
 df_all_users=pd.read_sql('select distinct user_id_id from dublinBus_userlocation', con=db_connection)
 #print(df_all_users)
+cursor = db_connection.cursor()
+update_points=("UPDATE dublinBus_userpoints set dublin_bus_points=%s, distance_travelled_on_DublinBus=%s where user_id_id=%s")
 for user in df_all_users.itertuples():
     print("User id", user[1])
     user_id=user[1]
@@ -50,8 +53,15 @@ for user in df_all_users.itertuples():
             total_points += single_login_points
             current_time = time_of_day
             current_location = (row[2],row[3])
+        
     print("total points ",total_points)
     print("total distance ", total_distance)
+    params=[total_points, total_distance, user_id]
+    cursor.execute(update_points,params)
+db_connection.commit()
+
+cursor.close()
+db_connection.close()
 
 
     

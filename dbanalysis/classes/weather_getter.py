@@ -26,8 +26,9 @@ class weather_getter():
         #    df_weather=df_weather.append(df_temp, ignore_index=True)
         df_weather.index=df_weather['date']
         df=df_weather.resample('1H').pad()
-        df['hour'] = df['date'].dt.hour
         df['day'] = df['date'].dt.dayofweek
+        df['date'] = pd.to_datetime(df.index)
+        df['hour'] = df['date'].dt.hour
         #print(df_resampled_data)
         #print(df_weather.shape)
         #print(df_resampled_data.shape)

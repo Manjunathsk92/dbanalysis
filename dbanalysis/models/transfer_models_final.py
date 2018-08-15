@@ -1,5 +1,5 @@
-from_directory = '/data/extra_neural_models'
-to_directory = '/data/neural_models'
+from_directory = '/data/extra_neural_models3'
+to_directory = '/data/neural_models3'
 import os
 from subprocess import call
 neural_models = os.listdir(to_directory)

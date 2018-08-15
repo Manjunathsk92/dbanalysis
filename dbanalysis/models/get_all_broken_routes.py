@@ -1,6 +1,6 @@
 import os
 from subprocess import call
-all_models = set(os.listdir('/data/neural_models'))
+all_models = set(os.listdir('/data/neural_models3'))
 import json
 routes = json.loads(open('/home/student/dbanalysis/dbanalysis/resources/trimmed_routes.json','r').read())
 to_write = []
@@ -20,7 +20,7 @@ for r in routes:
 import pickle
 with open('/home/student/dbanalysis/dbanalysis/models/missing_models.bin','wb') as handle:
     pickle.dump(to_write,handle,protocol=pickle.HIGHEST_PROTOCOL)
-call(['mkdir','/data/extra_neural_models'])
+call(['mkdir','/data/extra_neural_models3'])
 from dbanalysis import stop_tools
 #its too late now to use the data frames. Going to copy the model and the multiplier
 stop_getter = stop_tools.stop_getter()
@@ -48,11 +48,11 @@ for array in to_write:
 
         if found:
             try:
-                with open('/data/neural_models/'+str(best_pair[0])+'_'+str(best_pair[1])+'.bin','rb') as handle:
+                with open('/data/neural_models3/'+str(best_pair[0])+'_'+str(best_pair[1])+'.bin','rb') as handle:
                     d = pickle.load(handle)
                 handle.close()
             except:
-                with open('/data/extra_neural_models/'+str(best_pair[0])+'_'+str(best_pair[1])+'.bin','rb') as handle:
+                with open('/data/extra_neural_models3/'+str(best_pair[0])+'_'+str(best_pair[1])+'.bin','rb') as handle:
                     d = pickle.load(handle)
                 handle.close()
            
@@ -60,7 +60,7 @@ for array in to_write:
             model_distance = stop_getter.get_stop_distance(str(best_pair[0]),str(best_pair[1]))
             actual_distance = stop_getter.get_stop_distance(str(stopA),str(stopB))
             d['multiplier'] = actual_distance / model_distance
-            with open('/data/extra_neural_models/'+str(stopA)+'_'+str(stopB)+'.bin','wb') as handle:
+            with open('/data/extra_neural_models3/'+str(stopA)+'_'+str(stopB)+'.bin','wb') as handle:
                 pickle.dump(d,handle,protocol=pickle.HIGHEST_PROTOCOL)
             all_models.add(str(stopA)+'_'+str(stopB)+'.bin')
             handle.close()

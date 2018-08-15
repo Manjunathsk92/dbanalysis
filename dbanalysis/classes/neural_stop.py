@@ -42,9 +42,12 @@ class stop():
         self.foot_links = {}
         self.models = {}
     def add_link(self,link,distance):
+        """
+        Method to add a link. Loads both the link information and the models
+        """
         if link not in self.links:
             try:
-                with open('/data/neural_models/'+self.stop_id+'_'+str(link)+'.bin','rb') as handle:
+                with open('/data/neural_models3/'+self.stop_id+'_'+str(link)+'.bin','rb') as handle:
                     d = pickle.load(handle)
                 handle.close()
                 if 'multiplier' in d:
@@ -69,7 +72,7 @@ class stop():
 
     def predict_multiple(self,df,link):
         
-        features = ['rain','temp','vappr','hour','day']
+        features = ['rain','temp','hour','day']
         df['hour'] = df['actualtime_arr_to'] //3600
         df['actualtime_arr_from'] = df['actualtime_arr_to'] 
         X = self.X_scalers[link].transform(df[features])
@@ -141,11 +144,18 @@ class stop():
         return row, traveltime 
             
     def dump_time_tables(self):
+        """
+        Right now time tables are dumped en masse. To be implemented at a later data.
+        """
+
         import pickle
         with open('/home/data/timetables/'+str(self.stop_id)+'.bin','wb') as handle:
             pickle.dump(self.timetable,handle,protocol = pickle.HIGHEST_PROTOCOL)
 
     def get_foot_links(self):
+        """
+        Super inefficient method. Fins the closest five stops to this stop and adds them as footlinks.
+        """
         import pickle
         with open('/home/student/dbanalysis/dbanalysis/resources/stop_foot_distance.pickle','rb') as handle:
             foot_stops = pickle.load(handle)

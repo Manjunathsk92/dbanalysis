@@ -233,9 +233,9 @@ class simple_network():
         """
         Run all components of dijsktra's alogirthm on time dependant(ish) graph.
         """
-        while self.graph_lock:
+        
             #block if/while routefinding algorithm is already running. Not too sure how django works in relation to this.
-            pass
+        
         self.graph_lock = True
         self.add_user_nodes(origin_lat,origin_lon,end_lat,end_lon,current_time)
         solved = self.main_dijkstra(day,current_time)
@@ -299,11 +299,12 @@ class simple_network():
                 if current_route != 'walking':
                     current_route = 'walking'
                     bus_bits.append(current_bus_bit)
+                    current_walking_bit += current_bus_bit[-1]
                     current_bus_bit = []
                 shape = self.stop_getter.get_shape(data[i+1]['id'],data[i]['id'])       
                 if shape is None:
-                    current_walking_bit+=[{'lat':data[i]['data']['lat'],'lng':data[i]['data']['lon']},\
-                                    {'lat':data[i+1]['data']['lat'],'lng':data[i+1]['data']['lon']}]
+                    current_walking_bit+=[{'lat':data[i+1]['data']['lat'],'lng':data[i+1]['data']['lon']},\
+                                    {'lat':data[i]['data']['lat'],'lng':data[i]['data']['lon']}]
                 else:
                     # this is blatantly wasteful here.
                     current_walking_bit += [{'lat':i['lat'],'lng':i['lon']} for i in list(reversed(shape))]
@@ -311,14 +312,15 @@ class simple_network():
                 
                 if current_route == 'walking':
                     current_route = 'not walking'
+                    current_bus_bit += current_walking_bit[-1]
                     walking_bits.append(current_walking_bit)
                     current_walking_bit = []
-                try:
+               
                     # again. Blatant waste
-                    current_bus_bit += [{'lat':i['lat'],'lng':i['lon']} for i in\
-                    list(reversed(self.stop_getter.get_shape(data[i+1]['id'],data[i]['id'])))]
-                except:
-                    pass
+                current_bus_bit += [{'lat':i['lat'],'lng':i['lon']} for i in\
+                list(reversed(self.stop_getter.get_shape(data[i+1]['id'],data[i]['id'])))]
+              
+               
                     
         if current_bus_bit != []:
             bus_bits.append(current_bus_bit)
@@ -444,7 +446,7 @@ class simple_network():
                 'time':start_time})
             if route != current_route:
                 current_route = route
-                stop_markers.append(output[-1])
+                stop_markers.append(output[-2])
             current_node = new_curnode
             weight = minweight
         if output[-1] != stop_markers[-1]:

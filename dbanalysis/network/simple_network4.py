@@ -174,8 +174,8 @@ class simple_network():
                     count +=1
                     X=times[variation]
                     
-                    # merge with weather data to add weather features.
-                    #X['matrix'] = pd.merge(X['matrix'],weather[['day','hour','rain','temp','vappr']],on = ['day','hour'])
+                    #merge with weather data to add weather features.
+                    #X['matrix'] = pd.merge(X['matrix'],weather[['day','hour','rain','temp']],on = ['day','hour'])
                     X['matrix']['rain']=0.08
                     X['matrix']['temp']=10.0
                     X['matrix']['vappr']=10.0
@@ -200,26 +200,37 @@ class simple_network():
         # get the next departure at A        
         
         arr = self.routes[route][v_num][1:]
+        
         start = arr.index(int(stopA))
         end = arr.index(int(stopB)) - 1
+        
         link = str(arr[start+1])
         # look up the first arrival for a on this route that exceeds or equals the given time
-        departure_time = self.nodes[str(stopA)].timetable.get_next_departure_route(day,link,time,route)[0]
-        if departure_time is None:
+        
+        next_stop = str(arr[start+1])
+        response = self.next_stop_route(day,time,str(stopA),str(next_stop),route)
+        
+        if response is None:
             return None
+        departure_time = response[0]
+        
         # Cycle through the route looking up the departure and arrival times for each stop segment
         #unfortunately this can still break occasionally, as we haven't properly sorted routes and variations
         # In addition, there might not be a next bus. In that case we return None and it is hanled by the
         # Django app.
-        try:
+        time = departure_time
+        try: 
             for i in range(start,end):
-                resp = self.get_next_stop(str(arr[i]),str(arr[i]+1))
+             
+                resp = self.next_stop_route(day,time,str(arr[i]),str(arr[i+1]),route)
             
-                resp = resp[0]
-                if str(resp[2]) != route:
-                    return None
-            return resp[0],resp[1]    
-        except:
+            
+                time = resp[1]
+            return departure_time,resp[1]
+           
+        except Exception as e:
+            print(str(e))
+            
             return None
     def get_next_stop(self,stopA,stopB,day,time):
         """
@@ -238,16 +249,16 @@ class simple_network():
         Run all components of dijsktra's alogirthm on time dependant(ish) graph.
         """
         print('loading')
-        while self.graph_lock:
+        #while self.graph_lock:
             #block if/while routefinding algorithm is already running. Not too sure how django works in relation to this.
-            pass
+        #    pass
         import copy
         #make copies of the graph and weight objects
         graph = copy.deepcopy(self.graph)
         weights = copy.deepcopy(self.weights)
         #graph lock is probably no longer necessary
         self.graph_lock = True
-        #add user location and destination to the graph
+        #add user location and destination to the graph`
         graph,weights,finish_stops = self.add_user_nodes(origin_lat,origin_lon,end_lat,end_lon,current_time,graph,weights)
         #solve the graph
         solved,graph,weights,back_links = self.main_dijkstra(day,current_time,graph,weights,finish_stops)
@@ -355,7 +366,7 @@ class simple_network():
 
         pass
         
-    def main_dijkstra(self,day,start_time,graph,weights,finish_stops,time_weight=1,transfer_weight=2000,walking_weight=1,max_bus_wait=600):
+    def main_dijkstra(self,day,start_time,graph,weights,finish_stops,time_weight=1,transfer_weight=4000,walking_weight=1,max_bus_wait=6000000000):
         """
         Actual implementation of dijkstra's algorithm on time dependant(ish) graph
         This is... legitimately... a disaster.
@@ -447,7 +458,7 @@ class simple_network():
                 if new_weight < weights[link_name][route][0] and new_weight > weight:
                     # here we need a proper formula for balancing walking sections, time travelled, and number of transfer
                     weights[link_name][route] = [new_weight,time,number,walking_sections,False] 
-                    
+                 
                       
                     heapq.heappush(to_visit,[new_weight,time,number,walking,link_name,route])
                     route_to_write = current_route
@@ -590,8 +601,17 @@ class simple_network():
         import datetime
         # look up the time tables, and concatenate them
         timetables = self.nodes[str(stop)].timetable.data[day]
-        timetables = np.concatenate([timetables[link][route] for route in timetables[link]\
-                                                            for link in timetables],axis=0)
+        to_concat = []
+        for link in timetables:
+            for route in timetables[link]:
+                to_concat.append(timetables[link][route])
+        
+        if len(to_concat) == 0:
+            
+            return []
+        
+            
+        timetables = np.concatenate(to_concat,axis=0)
         
         seconds = (dt - dt.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
         #sort the time tables by arrival time
@@ -600,7 +620,7 @@ class simple_network():
         index = np.searchsorted(timetables[0:,0],seconds)
         # if there's no timetables information after the given time, return nothing
         if index > timetables.shape[0]:
-            return None
+            return []
         else:
             #pack the time table information into a response that Django can JSON serialize
             response = []
@@ -687,58 +707,18 @@ if __name__ == '__main__':
     
     with open('/data/done.bin','rb') as handle:
         n=pickle.load(handle)
-    
+     
     handle.close()
     #n.prepare_dijkstra()
     #n.properly_add_foot_links()
-    resp=n.dijkstra(1,36000,53.3219,-6.2655,53.3660,-6.2045)
-    print(resp['text'])
-    #for i in resp['data']:
-    #    print(i)    
-    #import pickle
-    #import pickle
-    #with open('simple_network_dump.bin','rb') as handle:
-    #   n= pickle.load(handle)
-    #import datetime
-    #from dbanalysis.classes import time_tabler_refac as time_tabler
-    #for route in n.routes:
-    #    for v_num,v in enumerate(n.routes[route]):
-    #        can_run = True
-    #        for i in range(1,len(v)-1):
-    #            stopA = str(v[i])
-    #            stopB = v[i+1]
-    #            if (stopA not in n.nodes) or (stopB not in n.nodes[stopA].links):
-    #                can_run = False
-    #        if can_run:
-    #            print(route,v_num)
-    #            print(v)
+    #resp=n.dijkstra(3,46000,53.2828,-6.3177,53.3660,-6.2045)
     
-    #n.generate_time_tables()        
-    #with open('simple_network_with_tables.bin','wb') as handle:
-
-    #    pickle.dump(n,handle,protocol=pickle.HIGHEST_PROTOCOL)
-    #with open('simple_network_with_tables.bin','rb') as handle:
-    #    n= pickle.load(handle)
-
-    #for node in n.nodes:
-    #    try:
-    #        n.nodes[node].timetable.concat_and_sort()
-            
-            
-    #    except Exception as e:
-    #        print(e)
-    #        pass
-    #with open('timetables_dump.bin','wb') as handle:
-    #    pickle.dump(n.nodes,handle,protocol=pickle.HIGHEST_PROTOCOL)
-    #with open('simple_nAttributeError: Can't get attribute 'simple_network' on <module '__main__' from 'manage.py'>AttributeError: Can't get attribute 'simple_network' on <module '__main__' from 'manage.py'>ietwork_concated','wb') as handle:
-    #    pickle.dump(n,handle,protocol=pickle.HIGHEST_PROTOCOL)             
-   # import pickle
-   # with open('simple_network_concated','rb') as handle:
-   #     n = pickle.load(handle)
-   # r15 = n.routes['15'][1]
-   # a = r15[1]
-   # b= r15[68]
-   # print(n.quick_predict(5,'15',1,a,b,19*3600))
+    import json
+    routes = json.loads(open('/home/student/db/resources/trimmed_routes.json','r').read())
+    r15 = n.routes['15'][1]
+    a = str(r15[1])
+    b= str(r15[-1])
+    print(n.quick_predict(3,'15',1,a,b,12*3600))
    # a = 15000000
     
     #for i in range (1,len(r15)-1):
