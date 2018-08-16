@@ -1,0 +1,25 @@
+Begining run for: <module 'time' (built-in)> 
+User id 8
+total points  532489.6391513533
+total distance  53236.96391513512
+User id 19
+total points  10.0
+total distance  0.0
+User id 22
+total points  30.057509150809373
+total distance  0.0057509150809372704
+User id 23
+total points  10.073219306220205
+total distance  0.007321930622020495
+User id 24
+total points  145897.20422511696
+total distance  14588.720422511697
+User id 25
+total points  31.205424546364547
+total distance  1.1205424546364546
+User id 28
+total points  10.061978217353554
+total distance  0.0061978217353554485
+User id 29
+total points  40.898556628301364
+total distance  2.089855662830136

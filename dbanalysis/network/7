@@ -253,10 +253,12 @@ class simple_network():
     
     def dijkstra(self,day,current_time,origin_lat,origin_lon,end_lat,end_lon,text_response=True):
         """
-        Run all components of dijsktra's alogirthm on time dependant graph.
+        Run all components of dijsktra's alogirthm on time dependant(ish) graph.
         """
         print('loading')
-       
+        #while self.graph_lock:
+            #block if/while routefinding algorithm is already running. Not too sure how django works in relation to this.
+        #    pass
         import copy
         #make copies of the graph and weight objects
         graph = copy.deepcopy(self.graph)
@@ -270,66 +272,59 @@ class simple_network():
             return None
         else:
             #walk back the route fastest route, creating a response object
-            response = self.walk_back_dijkstra(origin_lat,origin_lon,end_lat,\
+            response,stop_markers = self.walk_back_dijkstra(origin_lat,origin_lon,end_lat,\
                                 end_lon,current_time,graph,weights,back_links)
             #clean up the graph. Actually no longer necessary
             #tear_down = Thread(target=self.tear_down_dijkstra)
             #tear_down.start()
-            
+            if text_response:
                 #get a text response.
-            text,stop_markers = self.get_directions_and_stop_markers(response)
-            return {'data':response,'text':text,'stop_markers':stop_markers}
-          
-            
+                text = self.get_directions(response)
+                return {'data':response,'text':text,'stop_markers':stop_markers}
+            else:
+                return {'data':response}
 
-    def get_directions_and_stop_markers(self,resp):
+    def get_directions(self,resp):
         """
         Create readable text version of dijkstra response.
         Code is unnecessarily complex. Basically just iterates through the response,
         recording in text every time the route is switched (e.g from 'walking' to '15A')
         """
         text=[]
-        stop_markers = []
         current_route = 'walking'
         current_stop = resp[-1]
         time = current_stop['time']
-        current_wait_time = 0
         for i in range(len(resp)-2,-1,-1):
-            
+            if resp[i]['wait_time'] != 0:
+                text.append('Wait for ' + str(resp[i]['wait_time'] //60) + ' minutes.')
             if resp[i]['route'] != current_route or resp[i]['id'] == 'end':
-                wait_time = resp[i]['wait_time']
-                stop_markers.append(current_stop) 
+                 
                 if current_route == 'walking' and resp[i]['id'] != 'end':
                        text.append('Walk from '+\
                                 current_stop['data']['stop_name']\
                                 + ' to '\
                                 + resp[i]['data']['stop_name']\
                                 +'.'+\
-                                str(int((resp[i]['time']-time))//60)+\
+                                str((resp[i]['time']-time)//60)+\
                                 ' minutes.')
                  
                 elif resp[i]['id'] == 'end':
                     
                     text.append('Walk from '+ current_stop['data']['stop_name'] +\
-                                 ' to destination. ' + str(int((resp[i]['time']-time))//60) + ' minutes.') 
+                                 ' to destination. ' + str((resp[i]['time']-time)//60) + ' minutes.') 
                 else:
                     text.append('Take the ' + current_route\
                                 +' from '\
                                 + current_stop['data']['stop_name']\
                                 +' to '\
-                                + resp[i]['data']['stop_name'] +'. '+\
-                                str(int((resp[i]['time']-time - current_wait_time))//60)+\
+                                + resp[i]['data']['stop_name'] +'.'+\
+                                str((resp[i]['time']-time)//60)+\
                                 ' minutes.')
-            
-                
+
                 current_route = resp[i]['route']
                 current_stop = resp[i]
                 time = current_stop['time']
-                print('time now',time // 60)
-            if resp[i]['wait_time'] != 0:
-                current_wait_time = resp[i]['wait_time']
-                text.append('Wait for ' + str(int(resp[i]['wait_time'] // 60)) + ' minutes') 
-        return text,stop_markers
+        return text
     def dijkstra_shape(self,data):
         """
         Get the full route shape to be displayed by the frontend.
@@ -340,41 +335,31 @@ class simple_network():
         current_walking_bit = []
         current_bus_bit = []
         current_route = 'walking'
-        data = list(reversed(data))
         for i in range(0,len(data)-1):
-            if data[i+1]['from'] == 'w':
+            if data[i]['route'] == 'walking':
                 if current_route != 'walking':
                     current_route = 'walking'
                     # if the route has changed, append the current bus shape to the bus bit array
-                    if len(current_bus_bit) > 0:
-                        bus_bits.append(current_bus_bit)
-                        current_bus_bit = []
-                shape = self.stop_getter.get_shape(data[i]['id'],data[i-1]['id'])       
-                
-                current_walking_bit+=[{'lat':data[i]['data']['lat'],'lng':data[i]['data']['lon']},\
+                    bus_bits.append(current_bus_bit)
+                    current_bus_bit = []
+                shape = self.stop_getter.get_shape(data[i+1]['id'],data[i]['id'])       
+                if shape is None:
+                    current_walking_bit+=[{'lat':data[i]['data']['lat'],'lng':data[i]['data']['lon']},\
                                     {'lat':data[i+1]['data']['lat'],'lng':data[i+1]['data']['lon']}]
-                #else:
-                #    # this is blatantly wasteful here.
-                #    current_walking_bit +=  [{'lat':data[i]5['data']['lat'],'lng':data[i]['data']['lon']}] +\
-                #                            [{'lat':i['lat'],'lng':i['lon']} for i in shape] +\
-                #                            [{'lat':data[i+1]['data']['lat'],'lng':data[i+1]['data']['lon']}]                                           
+                else:
+                    # this is blatantly wasteful here.
+                    current_walking_bit += [{'lat':i['lat'],'lng':i['lon']} for i in list(reversed(shape))]
             else:
                 
                 if current_route == 'walking':
                     current_route = 'not walking'
                     #again, if the route has change, append the current route to the walking bits.
-                    if len(current_walking_bit) > 0:
-                        walking_bits.append(current_walking_bit)
-                        current_walking_bit = []
+                    walking_bits.append(current_walking_bit)
+                    current_walking_bit = []
                 try:
                     current_bus_bit += [{'lat':i['lat'],'lng':i['lon']} for i in\
-                    self.stop_getter.get_shape(data[i]['id'],data[i+1]['id'])]
-                except Exception as e:
-                    current_bus_bit +=[{'lat':data[i]['data']['lat'],'lng':data[i]['data']['lon']},\
-                                    {'lat':data[i+1]['data']['lat'],'lng':data[i+1]['data']['lon']}]
-
-                    print(str(e))
-                    
+                    list(reversed(self.stop_getter.get_shape(data[i+1]['id'],data[i]['id'])))]
+                except:
                     pass
                     
         if current_bus_bit != []:
@@ -383,7 +368,7 @@ class simple_network():
     
         elif current_walking_bit != []:
             # same for the walking path
-            i = len(data)-1
+            i = len(data) - 1
             current_walking_bit.append({'lat':data[i]['data']['lat'],'lng':data[i]['data']['lon']})
             walking_bits.append(current_walking_bit)
         return {'bus':bus_bits,'walk':walking_bits}
@@ -391,7 +376,7 @@ class simple_network():
 
         pass
         
-    def main_dijkstra(self,day,start_time,graph,weights,finish_stops,time_weight=1,transfer_weight=400,walking_weight=1,max_bus_wait=1200):
+    def main_dijkstra(self,day,start_time,graph,weights,finish_stops,time_weight=1,transfer_weight=4000,walking_weight=1,max_bus_wait=6000000000):
         """
         Actual implementation of dijkstra's algorithm on time dependant(ish) graph
         This is... legitimately... a disaster.
@@ -427,32 +412,24 @@ class simple_network():
         
         #push the origin onto the heap
         heapq.heappush(to_visit,[0,start_time,0,0,'begin','t-na'])
-        def calculate_weights(time,walking,transfers,s_time=start_time,w_weight = walking_weight,\
-                                             t_weight = time_weight, tr_weight = transfer_weight):
-            
-            new_weight = ((time - s_time)*t_weight) + (transfers * tr_weight) + (walking * w_weight)
         
-            return new_weight
-
-       
-
         while len(to_visit) > 0:
             #pop a node from the heap
             #assign named variables to various attributes of this node
-            node_props = heapq.heappop(to_visit)
-            weight = node_props[0]
-            current_time = node_props[1]
-            transfers = node_props[2]
-            walking_sections = node_props[3]
-            current_node = node_props[4]
-            current_route = node_props[5]
+            w = heapq.heappop(to_visit)
+            weight = w[0]
+            current_time = w[1]
+            transfers = w[2]
+            walking_sections = w[3]
+            current_node = w[4]
+            current_route = w[5]
             
             if current_route[0] != 't': 
                 ws = weights[current_node][current_route]
                 visited = ws[4]
-            
-            else:    
+            else:
                 visited = False
+
             if current_node == 'end':
                 # if we have reached the end, break out of the loop
                 print('solved with',transfers,'transfers')
@@ -470,15 +447,11 @@ class simple_network():
                 weights[current_node][current_route][4] = True
              
             links = graph[current_node]
-            
             if current_route[0] != 't':
                 #push a transfer for this stop
-                new_weight = calculate_weights(current_time,walking_sections,transfers+1)
-                print(new_weight)
+                new_weight = ((current_time - start_time)*time_weight) + (transfers+1 * transfer_weight) + (walking_sections * walking_weight)
                 heapq.heappush(to_visit,[new_weight,current_time,transfers+1,walking_sections,current_node,'t'+current_route])
-            
             elif current_route [0] == 't':
-                #can't repeat the route that we transferred on
                 cant_take = current_route[1:]
             for link in links:
                 link_name = link[0]
@@ -507,15 +480,17 @@ class simple_network():
                         #if this involves waiting for long than the maximum waiting time allowed,
                         # then skip ahead to the next link
                         wait_time = time[0] - current_time
-                        time = time[1]
                         if wait_time > max_bus_wait:
                        
                             continue
-                        
+                        else:
+                            time = time[1]
+                            if time < current_time:
+                                pass 
                 else:
                     continue
                 # caculate the new weight for this path     
-                new_weight = calculate_weights(time,walking,number)
+                new_weight = ((time - start_time) * time_weight) + (number * transfer_weight) + (walking * walking_weight)
                 #if its less than the wait of the node we're going to
                 if new_weight < weights[link_name][route][0] and new_weight > weight:
                     #change the weights of the link we're going to
@@ -549,7 +524,7 @@ class simple_network():
         stop_markers = []
         output = [{'id':'end','route':'walking',\
                 'data':{'lat':end_lat,'lon':end_lon,\
-                        'name':'destination'},'time':time_weight, 'wait_time':0,'from':'w'}]
+                        'name':'destination'},'time':time_weight, 'wait_time':0}]
         stop_markers.append(output[0])
         current_route = 'walking'
         print(transfer_weight)
@@ -559,7 +534,6 @@ class simple_network():
         previous_node = 'end'
         path = set()
         min_transfer_weight = inf
-        append_next_stop_marker = False
         for r in back_links[current_node]:
             if back_links[current_node][r][1] < min_transfer_weight:
                 min_transfer_weight = back_links[current_node][r][1]
@@ -590,7 +564,7 @@ class simple_network():
             if new_curnode != 'begin':
                 output.append({'data':self.stops_dict[new_curnode],\
                 'id':new_curnode,\
-                'route':route,'from':r_name,\
+                'route':route,\
                 'time':time_weight,'wait_time':wait_time})
             else:  
                 output.append({'id':'begin','data':\
@@ -598,19 +572,15 @@ class simple_network():
                 'route':'walking',\
                 'time':start_time,'wait_time':wait_time})
                 break
-            #if append_next_stop_marker:
-            #    stop_markers.append(output[-1])
-            #    append_next_stop_marker = False
-            #if route != current_route:
-            #    current_route = route
-            #    append_next_stop_marker = True
-                
+            if route != current_route:
+                current_route = route
+                stop_markers.append(output[-1])
             
             previous_node = current_node
             current_node = new_curnode 
-        #if output[-1] != stop_markers[-1]:
+        if output[-1] != stop_markers[-1]:
             stop_markers.append(output[-1])
-        return output
+        return output,stop_markers
 
     def add_user_nodes(self,origin_lat,origin_lon,end_lat,end_lon,start_time,graph,weights):
         """
@@ -769,15 +739,15 @@ if __name__ == '__main__':
     handle.close()
     #n.prepare_dijkstra()
     #n.properly_add_foot_links()
-    resp=n.dijkstra(3,46000,53.3660,-6.2045,53.3219,-6.2665)
-    n.dijkstra_shape(resp['data'])
-    #input()
-    #import json
-    #routes = json.loads(open('/home/student/db/resources/trimmed_routes.json','r').read())
-    #r15 = n.routes['15'][1]
-    #a = str(r15[1])
-    #b= str(r15[-1])
-    #print(n.quick_predict(3,'15',1,a,b,12*3600))
+    resp=n.dijkstra(3,46000,53.2828,-6.3177,53.3660,-6.2045)
+    print(resp['text'])
+    input()
+    import json
+    routes = json.loads(open('/home/student/db/resources/trimmed_routes.json','r').read())
+    r15 = n.routes['15'][1]
+    a = str(r15[1])
+    b= str(r15[-1])
+    print(n.quick_predict(3,'15',1,a,b,12*3600))
    # a = 15000000
     
     #for i in range (1,len(r15)-1):

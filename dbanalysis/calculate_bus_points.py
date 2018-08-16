@@ -5,7 +5,7 @@ import pandas as pd
 import mysql.connector
 single_login_points = 10
 points_per_km = 10
-print("Begining run for: {} ".format(time) )
+print("Begining run for: ",datetime.now() )
 db_connection = mysql.connector.connect(user='dublinbus', password='Ucd4dogs!',
                                   host='127.0.0.1',
                                  database='researchpracticum')
@@ -40,8 +40,8 @@ for user in df_all_users.itertuples():
             current_location = (row[2],row[3])
             current_time = time_of_day
     
-        elif time_of_day < current_time + 3600:
-            # if more less than an hour since the user last checked in, award mileage points
+        elif time_of_day < current_time + 1800:
+            # if less than an half hour has elapsed since the user last checked in, award mileage points
             distance = haversine.haversine(current_location,(row[2],row[3]))
             total_distance+=distance
             total_points += int(points_per_km) * distance

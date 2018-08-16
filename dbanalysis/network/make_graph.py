@@ -1,3 +1,9 @@
+"""
+Script generates and saves a nested object describing every available route link in the dublin bus network.
+
+Also generates a weights a 'weights' object, that stores the weights for every link.
+"""
+
 import json
 routes = json.loads(open('/home/student/dbanalysis/dbanalysis/resources/trimmed_routes.json','r').read())
 graph = {}

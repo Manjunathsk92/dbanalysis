@@ -78,7 +78,7 @@ class time_tabler():
 
 
             
-    def get_dep_times_five_days(self,route,dt,number_days=7):
+    def get_dep_times_five_days(self,route,dt):
         """
         Generate timetables for five days at a time
         """
@@ -95,7 +95,7 @@ class time_tabler():
             busIDs=[]
             days = []
             temp_day = day
-            for i in range(0,number_days):
+            for i in range(0,5):
                 
                 for bus_number, pair in enumerate(variation['leave_times']):
                     if self.runs_today(pair['schedule'],temp_day):
@@ -200,37 +200,11 @@ class stop_time_table():
             df = pd.concat(to_concat,axis=0)
             df=df.sort_values(by=['day','actualtime_arr_from'])
             for d in df['day'].unique():
-                self.data[d][link] = {}
-                temp = df[df['day']==d]
-                print(len(temp))
-                for r in temp['routeid'].unique():     
-                    self.data[d][link][r] = temp[temp['routeid']==r][['actualtime_arr_from','actualtime_arr_to','routeid']].values            
-                del(temp)
+                self.data[d][link] = df[df['day']==d][['actualtime_arr_from','actualtime_arr_to','routeid']].values
             del(df)
         del(self.to_concat)
 
- 
-    def get_next(self,day,link,current_time,route):        
-        if day not in self.data:
-            print('missing day')
-            return None
-        if link not in self.data[day]:
-            print([l for l in self.data[day]])
-            print('missing link')
-            return None
-        if route not in self.data[day][link]:
-            print('missing route')
-            return None
-        import numpy as np
-        try:
-            index=[np.searchsorted(self.data[day][link][route][0:,0],current_time)]
-        except:
-            print('broken for this route')
-            return None
-        if index[0] < len(self.data[day][link][route]):
-            return self.data[day][link][route][index[0]]
-        else:
-            return None       
+             
 
     def get_next_departure(self,day,link,current_time):        
         if link not in self.data[day]:

@@ -1,3 +1,10 @@
+"""
+Scripts finds all models that weren't constructed during the first model building process.
+Finds the closest existing model to them on a route. Calculates a multiplier based on the ratio of distance
+for the existing stop link, versus that of the missing one. Opens the existing model, adds this distance multiplier,
+to its object. Saves as a new model.
+
+"""
 import os
 from subprocess import call
 all_models = set(os.listdir('/data/neural_models3'))

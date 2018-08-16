@@ -10,6 +10,8 @@ from sklearn.preprocessing import StandardScaler as ss
     
 
 def model_stop(df):
+    #create a model from a dataframe  
+    
     #df = pd.get_dummies(df,columns=['day'])
     #features = ['day_'+str(i) for i in range(0,7)]
     #for f in features:
@@ -31,6 +33,9 @@ def model_stop(df):
 
 
 def model_route(route,variation,v_num):
+    """
+    Attempts to create models for every stop link in a route
+    """
     good_data_frame = None
     good_distance = None
     global real_stops
@@ -96,7 +101,11 @@ def model_route(route,variation,v_num):
             
     return True        
 def validate_model(model,X,features,Y_scaler,Y_real):
-
+    """
+    Validates a model. Rejects those that give negative predictions, or overly large scores.
+    Noticed a risk of neural models 'not reaching conversion' during the modelling process, which
+    can lead to terrible results. This is a crude fix, of course.
+    """
     preds = model.predict(X)
     preds = Y_scaler.inverse_transform(preds)
     if preds.min() < 0:
@@ -110,12 +119,18 @@ def validate_model(model,X,features,Y_scaler,Y_real):
         return True
 
 def write_error(error):
+    """
+    Writes an error (a route hasn't been modelled at all)
+    """
     f = open('/data/neural_models3/errorlog.log','a')
     f.write(error)
     f.close()
     
 
 def model_exists(stopA,stopB):
+    """
+    Checks if the model for a stop segment already exists.
+    """
     model_dir = '/data/neural_models3'
     if os.path.exists(model_dir+'/'+str(stopA)+'_'+str(stopB)+'.bin'):
         return True

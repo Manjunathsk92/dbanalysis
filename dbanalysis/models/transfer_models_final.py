@@ -1,3 +1,7 @@
+"""
+Transfers models into the right directory, if they're not there already
+"""
+
 from_directory = '/data/extra_neural_models3'
 to_directory = '/data/neural_models3'
 import os

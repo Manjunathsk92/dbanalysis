@@ -11,7 +11,7 @@ def get_stop_link(stopA,stopB, src='file',merge_weather=False):
     
     """
     Almost redundant,or possibly still used by the Big Route Model. Use stop_tools.stop_data() instead
-    Retrieve the data describing the link between two stops
+    Retrieves the data describing the link between two stops
     """
     import os
     import pandas as pd
@@ -69,10 +69,15 @@ class stop_getter():
         with open(base_dir+'new_stops_dict.bin','rb') as handle:
             self.stops_dict = pickle.load(handle)
     def get_stop_info(self,stop):
+        """
+        Return a stop's location, text description and the routes that it serves.
+        """
         stop = str(stop)
         return self.stops_dict[stop]
     def get_stop_coords(self,stop):
-
+        """
+        Get the coordinates of a stop.
+        """
         if stop in self.stops_dict:
            return {'lat':self.stops_dict[stop]['lat'],
                     'lon':self.stops_dict[stop]['lon']}
@@ -81,12 +86,19 @@ class stop_getter():
             return None
 
     def get_stop_links(self, stop):
+        """
+        Return all the stops that this stop links to. Not used.
+        """
         if stop in self.stops_map:
             return [stop for stop in self.stops_map[stop]]
         else:
             return None
 
     def get_stop_distance(self,stop,link):
+        """
+        Calculate the distance for a stop link, either based on the coordiantes in its 'shape'
+        Or failing that, just using the haversine distance between two points.
+        """
         stop = str(stop)
         link = str(link)
         
@@ -118,8 +130,10 @@ class stop_getter():
             return None
 
     def get_shape(self,stopA,stopB):
-        #if we have the shape for this stop link, then return it
-        #can be chained to return route shape between multiple stops
+        """
+        Returns the shape of a stop link (a set of coordinates describing the route a bus travels
+        between them).
+        """
         stop = str(stopA)
         link = str(stopB)
         found_stops = True
@@ -137,6 +151,9 @@ class stop_getter():
             return None
 
     def get_shape_route(self,start_stop,end_stop,route_array):
+        """
+        Returns the entire shape of a route.
+        """
         begin = route_array.index(int(start_stop))
         end = route_array.index(int(end_stop))
         output=[]
@@ -150,6 +167,9 @@ class stop_getter():
         return {'shape':output,'distance':distance}
 
     def routes_serving_stop(self,stop):
+        """
+        Returns all of the route variations that a stops serves.
+        """
         return {'routes':self.stops_dict[str(stop)]['serves']}
     
 class stop_finder():
@@ -181,12 +201,13 @@ class stop_finder():
         while True:
             min_distance=inf
             for cluster in clusters:
-                
+                # find the closest cluster centre to the given location.
                 dist=haversine.haversine((lat,lon),(cluster['lat'],cluster['lon'])) 
                 if dist< min_distance:
                     min_distance = dist
                     best_group = cluster
-
+            
+            # if we have reached the bottom, return the actual stops.
             if 'nodes' in best_group:
                 return [{'stop_id':i,\
                 'info':self.stops_dict[str(i)],\
@@ -199,11 +220,13 @@ class stop_finder():
                 clusters = best_group['clusters']
 
     def rank_closest_stops(self,lat,lon):
+        #never completed
         from operator import itemgetter
         cluster = self.find_closest_stops(lat,lon)
         cluster = sorted(cluster,key=itemgetter('distance'))
     
     def best_stop(self,lat,lon):
+        #never used
         cluster = rank_closest_stops(lat,lon)
         return cluster[0]
         
@@ -228,6 +251,9 @@ def random_stop_data():
 
 
 def random_stop_file():
+    """
+    Returns a random stop link file name.
+    """
     import random
     stop_dirs=os.listdir('/home/student/data/stops')
     stop = random.choice(stop_dirs)
@@ -238,6 +264,9 @@ def random_stop_file():
     return None,None,None
 
 def stop_data(fromstop,tostop):
+    """
+    Retrieves data describing the chosen stop link.
+    """
     import os
     weather = pd.read_csv('/home/student/dbanalysis/dbanalysis/resources/cleanweather.csv')
     weather['dt']=pd.to_datetime(weather['date'])
@@ -287,6 +316,7 @@ def prep_test_stop_no_weather(filename,fromstop,tostop):
     return df
 
 #Method to get the travel time for missing link
+#never used.
 def get_missing_links_traveltime(prevstop, stop1, stop2, traveltime):
     if prevstop!='':
         previous_dist=stop_getter().get_stop_distance(prevstop, stop1)
@@ -298,32 +328,6 @@ def get_missing_links_traveltime(prevstop, stop1, stop2, traveltime):
     current_link_traveltime=current_link_distance/speed
     return current_link_traveltime
 
-
-def fake_data_frame(route,stop1,stop2,index):
-    """
-    Alternative method for imputing missing stop links.
-    Returns a fake dataframe
-    """
-    s_getter = stop_getter()
-    if index == 0:
-        #if the first stop in a route is missing
-        # find the first existing dataframe in the route, and use that to impute the distance
-        pass
-
-    else:
-        #find first previous data frame
-        #find next data frame
-
-        #if there is no previous data frame and there is a next data frame
-
-
-        #if the us a previous data frame but no next data frame
-
-
-        #if there is both a previous and a next dataframe
-
-
-        pass
 
 
 
