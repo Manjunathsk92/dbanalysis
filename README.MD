@@ -5,7 +5,7 @@ Includes:
 * scripts -> more functions for splitting bus data, and processing gtfs data
 * resources -> Plenty of pickles and dictionaries, derived from gtfs data
 * stop_tools -> the stop_getter (distance and shape retrieval) and stop_finder (find closest stops to given coordinates) classes, as well as some functions for retrieving and preprocessing data
-* classes -> contains stop objects, route selector objectss, and lso contains the time_tabler classes (generate bus departure times,and store and retrieve timetables in an accessible format).
+* classes -> contains stop objects, route selector objects, and also contains the time_tabler classes (generate bus departure times,and store and retrieve timetables in an accessible format).
 * network -> contains the network class that acts as a container for stops, as well as running routefinding algorithms and retrieving information about the dublin bus network.
 
 

@@ -1,7 +1,4 @@
-Begining run for:  2018-08-16 23:50:02.785726
-User id 8
-total points  532489.6391513533
-total distance  53236.96391513512
+Begining run for:  2018-08-17 23:50:02.894247
 User id 19
 total points  10.0
 total distance  0.0
@@ -11,9 +8,6 @@ total distance  0.0057509150809372704
 User id 23
 total points  10.073219306220205
 total distance  0.007321930622020495
-User id 24
-total points  145897.20422511696
-total distance  14588.720422511697
 User id 25
 total points  60.12680407650022
 total distance  3.012680407650022
