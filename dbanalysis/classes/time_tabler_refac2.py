@@ -78,7 +78,7 @@ class time_tabler():
 
 
             
-    def get_dep_times_five_days(self,route,dt,number_days=7):
+    def get_dep_times_N_days(self,route,dt,number_days=7):
         """
         Generate timetables for five days at a time
         """
@@ -202,7 +202,7 @@ class stop_time_table():
             for d in df['day'].unique():
                 self.data[d][link] = {}
                 temp = df[df['day']==d]
-                print(len(temp))
+                
                 for r in temp['routeid'].unique():     
                     self.data[d][link][r] = temp[temp['routeid']==r][['actualtime_arr_from','actualtime_arr_to','routeid']].values            
                 del(temp)

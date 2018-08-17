@@ -50,10 +50,12 @@ class simple_network():
 
                 
                 for i in range(1, len(variation)-1):
+                   
                     stopA = str(variation[i])
                     stopB = str(variation[i+1])
-                    distance = self.stop_getter.get_stop_distance(stopA,stopB)
                     
+                    distance = self.stop_getter.get_stop_distance(stopA,stopB)
+                     
                     if stopA not in self.nodes:
                         #load a stop object
                         stop_object = neural_stop.stop(stopA,self.stops_dict[stopA])
@@ -66,6 +68,15 @@ class simple_network():
                     else:
                         #if the stop already exists, then just add another link.
                         self.nodes[stopA].add_link(stopB,distance)
+                #might have to delete this
+
+                # oh my god. It turns out that the stops at the end of the routes are both arrvive and departure            
+    
+                #if str(variation[-1]) not in self.nodes:
+                #    print('adding last stop',str(variation[-1]))
+                #    stop_object = neural_stop.stop(str(variation[-1]),self.stops_dict[str(variation[-1])])
+                #    stop_object.get_foot_links()
+                #    self.nodes[stopA] = stop_object
         print (count)
     def properly_add_foot_links(self):
         """
@@ -164,7 +175,7 @@ class simple_network():
             # some routes are empty, ignore those.
             if len(self.routes[route]) < 1:
                 continue            
-            times = self.time_tabler.get_dep_times_five_days(route,dt)
+            times = self.time_tabler.get_dep_times_N_days(route,dt,number_days=7)
             # gets a timetable describing every scheduled departure time for the first stop on that route
             # over the next five days
             
@@ -177,10 +188,10 @@ class simple_network():
                     X=times[variation]
                     
                     #merge with weather data to add weather features.
-                    #X['matrix'] = pd.merge(X['matrix'],weather[['day','hour','rain','temp']],on = ['day','hour'])
-                    X['matrix']['rain']=0.08
-                    X['matrix']['temp']=10.0
-                    X['matrix']['vappr']=10.0
+                    X['matrix'] = pd.merge(X['matrix'],weather[['day','hour','rain','temp']],on = ['day','hour'])
+                    #X['matrix']['rain']=0.08
+                    #X['matrix']['temp']=10.0
+                    #X['matrix']['vappr']=10.0
                     
                     
                     
@@ -192,7 +203,7 @@ class simple_network():
                 #Unfortuntely, there wasn't time to properly address this problem.
                 except Exception as e:
                     print(str(e))
-                    input()
+                    
                     f=open('failedrouteslog.log','a')
                     f.write(route + ' ' + str(e))
                     f.close() 
@@ -391,7 +402,7 @@ class simple_network():
 
         pass
         
-    def main_dijkstra(self,day,start_time,graph,weights,finish_stops,time_weight=1,transfer_weight=400,walking_weight=1,max_bus_wait=1200):
+    def main_dijkstra(self,day,start_time,graph,weights,finish_stops,time_weight=1,transfer_weight=5000,walking_weight=5,max_bus_wait=3000):
         """
         Actual implementation of dijkstra's algorithm on time dependant(ish) graph
         This is... legitimately... a disaster.
@@ -445,6 +456,7 @@ class simple_network():
             transfers = node_props[2]
             walking_sections = node_props[3]
             current_node = node_props[4]
+            
             current_route = node_props[5]
             
             if current_route[0] != 't': 
@@ -474,7 +486,7 @@ class simple_network():
             if current_route[0] != 't':
                 #push a transfer for this stop
                 new_weight = calculate_weights(current_time,walking_sections,transfers+1)
-                print(new_weight)
+               
                 heapq.heappush(to_visit,[new_weight,current_time,transfers+1,walking_sections,current_node,'t'+current_route])
             
             elif current_route [0] == 't':
@@ -639,6 +651,9 @@ class simple_network():
         graph['begin'] = set()
         for stop in origin_stops:
             graph['begin'].add(tuple((stop,'w',origin_stops[stop])))
+            if stop not in weights:
+                weights[stop] = {}
+                continue
             weights[stop]['w'] = [inf,inf,inf,inf,False]
         return graph,weights,finish_stops
     

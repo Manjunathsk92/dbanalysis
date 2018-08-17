@@ -1,4 +1,4 @@
-Begining run for: <module 'time' (built-in)> 
+Begining run for:  2018-08-16 23:50:02.785726
 User id 8
 total points  532489.6391513533
 total distance  53236.96391513512
@@ -15,11 +15,11 @@ User id 24
 total points  145897.20422511696
 total distance  14588.720422511697
 User id 25
-total points  31.205424546364547
-total distance  1.1205424546364546
+total points  60.12680407650022
+total distance  3.012680407650022
 User id 28
-total points  10.061978217353554
-total distance  0.0061978217353554485
+total points  32.804812785526956
+total distance  2.2804812785526956
 User id 29
 total points  40.898556628301364
 total distance  2.089855662830136

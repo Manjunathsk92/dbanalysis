@@ -45,6 +45,7 @@ class stop():
         """
         Method to add a link. Loads both the link information and the models
         """
+        
         if link not in self.links:
             try:
                 with open('/data/neural_models3/'+self.stop_id+'_'+str(link)+'.bin','rb') as handle:
@@ -63,8 +64,7 @@ class stop():
                 self.link_distances[link] = distance
                 return True
             except Exception as e:
-                print(e)
-                input() 
+                print(e) 
                 print('no model for',self.stop_id,link)
                 return False
         else:
@@ -88,7 +88,7 @@ class stop():
             print('number of negatives:', len(traveltime[traveltime < 0]))
             #print('mean traveltime:',traveltime.mean())
             #print('percent lees than zero:',len(traveltime[traveltime <0]) / (len(traveltime) + 1))
-            if self.write_errors and 3 > 1:
+            if self.write_errors:
                 data = {'error':[self.stop_id, link,traveltime.min(),traveltime.mean()]}
                 f=open('modelerrors.log','a')
                 import json
@@ -107,7 +107,7 @@ class stop():
                 
                 a = (self.link_distances[link] / 30) * 3600
                 print(a)
-                traveltime = [a for a in range(len(traveltime))]  
+                traveltime[traveltime < 0] = a  
         else:
             pass
         if max(traveltime) > 500:

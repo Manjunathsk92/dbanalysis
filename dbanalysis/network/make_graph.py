@@ -9,6 +9,8 @@ routes = json.loads(open('/home/student/dbanalysis/dbanalysis/resources/trimmed_
 graph = {}
 weights = {}
 from math import inf
+from dbanalysis import stop_tools
+stop_getter = stop_tools.stop_getter()
 for route in routes:
 
     for v in routes[route]:
@@ -23,7 +25,8 @@ for route in routes:
             #every link/route pair is a tuple for the given stop
             graph[stopA].add(tuple((stopB,route)))
             #not included here, but walking nodes will also include the time taken to walk that distance
-
+            if stopB not in graph:
+                graph[stopB] = set()
             if stopB not in weights:
                 weights[stopB] = {}
             #we have five fields here.
@@ -33,7 +36,18 @@ for route in routes:
             #the fourth field is the total time taken
             #the last field represents whether this node has being visited or not
             weights[stopB][route] = [inf,inf,inf,inf,False]
-
+        try:
+            stopA = str(variation[-1])
+            stopB = str(variation[-2])
+            distance = stop_getter.get_stop_distance(stopB,stopA)
+            weights[stopA]['w'] = [inf,inf,inf,inf,False]
+            weights[stopB]['w'] = [inf,inf,inf,inf,False]
+        
+            if stopB not in graph:
+                graph[stopB] = set()
+                graph[stopB].add(tuple((stopA,'w',(distance/5) * 3600)))       
+        except:
+            print('why')
 import pickle
 with open('graphobject.bin','wb') as handle:
     pickle.dump(graph,handle,protocol=pickle.HIGHEST_PROTOCOL)
