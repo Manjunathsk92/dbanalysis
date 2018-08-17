@@ -19,7 +19,7 @@ The principal files used in our app are:
 * dbanalysis/models/build_neural_models.py The script used to actually build all of the stop link models. Also contains the BRM.py model class that was used as a holder for whole route models.
 * dbanalysis/route_tools.py Contains the get_munged_route_data function that was used to split route files into individual stop link files.
 * dbanalysis/scripts Contains many scripts that were used throughout the process.
-
+* dbanalysis/resources - Contains the models
 
 ## Running the tests
 
@@ -28,7 +28,6 @@ To run our suite of tests move into the directory "/dbanalysis/tests" and run:
 python test.py
 ```
 ```
-python test2.py
 ```
 
-* Unfortunately, the models are not included in this package, and without them the app won't run.
+You will have to open an ssh tunnel to our database in order to connect and properly run the tests.
