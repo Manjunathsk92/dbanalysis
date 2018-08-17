@@ -350,6 +350,9 @@ class test(unittest.TestCase):
         Have the same time for arrival and depart. It is miniscule, and it is hard to see how this problem,
         Worked its way into the timetables, but it did.
         On the last count, the number was three
+
+        Also the time tables having data test won't validate if run late at night. It uses the current datetime to 
+        query time tables. This was a flaw in the test, but there is no time to fix it. :(
         """
         
         
