@@ -62,3 +62,7 @@ Time table alignment unable for0 out of 98****
 Network object constructed and all timetables generated in 389.13346099853516seconds
 0 predictions out of 467**** 
 Time table alignment unable for0 out of 99****
+*******Test report for 2018-08-17 23:45:54.225145*******
+Network object constructed and all timetables generated in 386.7710688114166seconds
+0 predictions out of 467**** 
+Route finding failed on 8 sets of coordinates out of 100 ****

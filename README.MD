@@ -1,4 +1,5 @@
-## A set of tools for analyzing dublin bus data
+## An implementation of a time dependant graph on the Dublin Bus network. 
+
 Includes:
 * route_tools -> functions for splitting dublin bus data
 * scripts -> more functions for splitting bus data, and processing gtfs data
