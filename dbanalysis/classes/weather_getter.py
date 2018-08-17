@@ -1,12 +1,15 @@
+"""
+@manjunath
+Class for downloading 5 day weather forecast from database into pandas dataframe
+Resamples it from 3 hourly to hourly
+"""
+
 #class to get the weather details
 import mysql.connector
 import pandas as pd
 
 class weather_getter():
-    """
-    Class for downloading 5 day weather forecast from database into pandas dataframe.
-    Resamples it from 3 hourly to hourly.
-    """  
+     
     def __init__(self):
         db_connection = mysql.connector.connect(user='dublinbus', password='Ucd4dogs!',
                                   host='127.0.0.1',
