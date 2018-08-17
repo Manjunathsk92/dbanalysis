@@ -15,11 +15,17 @@ import pickle
 import pandas as pd
 import numpy as np
 class time_tabler():
+    """
+    Basic class for returning departure times from first stop on route
 
+    """
     def __init__(self,make_schedule_keys=False):
         from dbanalysis.stop_tools import stop_getter
+        import os
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.s_getter = stop_getter()
         if make_schedule_keys:
+            # won't work if you don't have this file, but the default is they are already made.
             df = pd.read_csv('/home/student/data/gtfs/calendar.txt')
             self.schedule_keys = {}
             from dbanalysis.stop_tools import stop_getter
@@ -28,14 +34,14 @@ class time_tabler():
                 G
                 gf = df[df['service_id']==s_id]
                 self.schedule_keys[s_id]=[i for i in gf.iloc[0,1:8].transpose()]          
-            with open('/home/student/dbanalysis/dbanalysis/resources/schedule_keys.pickle','wb') as handle:
+            with open(BASE_DIR+'/resources/schedule_keys.pickle','wb') as handle:
                 pickle.dump(self.schedule_keys,handle,protocol=pickle.HIGHEST_PROTOCOL)
 
         else:
-            with open('/home/student/dbanalysis/dbanalysis/resources/schedule_keys.pickle','rb') as handle:
+            with open(BASE_DIR+'/resources/schedule_keys.pickle','rb') as handle:
                 self.schedule_keys = pickle.load(handle)
     
-        with open('/home/student/dbanalysis/dbanalysis/resources/dep_times.pickle','rb') as handle:
+        with open(BASE_DIR+'/resources/dep_times.pickle','rb') as handle:
             self.dep_times=pickle.load(handle)
     def get_all_routes(self):
         output=[]
@@ -47,7 +53,8 @@ class time_tabler():
         """
         Multiply the size of the data frame by the number of stops. Add the distance of each stop
         To a portion of the data frame
-        Facilitates quick prediction with BRModel
+        Facilitates quick prediction with BRModel.
+        Not used in final implementation.
         """
         output = {}
         import copy
@@ -80,7 +87,7 @@ class time_tabler():
             
     def get_dep_times_N_days(self,route,dt,number_days=7):
         """
-        Generate timetables for five days at a time
+        Generate timetables for N days at a time
         """
         day = dt.weekday()
         month = dt.month
@@ -96,7 +103,7 @@ class time_tabler():
             days = []
             temp_day = day
             for i in range(0,number_days):
-                
+                #bit complicated. Basically just checks which tripids in the pickle are running on the current day
                 for bus_number, pair in enumerate(variation['leave_times']):
                     if self.runs_today(pair['schedule'],temp_day):
                         ts = pair['lt'].split(':')
@@ -127,6 +134,7 @@ class time_tabler():
         Generates departure times matrices, the inputs to chained route models.
         Output is an array of {departure time matrix, pattern} - one pattern and
         one matrix for each route variation found.
+        Unused
         """
         
         day = dt.weekday()
@@ -184,7 +192,9 @@ class stop_time_table():
         
        
     def add_times(self,df,link):
-        
+        """
+        Temporarily store dataframes before they are concated.
+        """
             
         if link not in self.to_concat:
             self.to_concat[link] = []
@@ -210,7 +220,11 @@ class stop_time_table():
         del(self.to_concat)
 
  
-    def get_next(self,day,link,current_time,route):        
+    def get_next(self,day,link,current_time,route):
+        """
+        This is the prediction method that actually gets used.
+        Returns the next arrival time for the current_stop, and the time it gets to the next stop.
+        """        
         if day not in self.data:
             print('missing day')
             return None
@@ -232,7 +246,10 @@ class stop_time_table():
         else:
             return None       
 
-    def get_next_departure(self,day,link,current_time):        
+    def get_next_departure(self,day,link,current_time):
+        """
+        Unused. Hopefully. Afraid to delete in case it is,somewhere
+        """        
         if link not in self.data[day]:
             return None
         import numpy as np
@@ -244,6 +261,9 @@ class stop_time_table():
         else:
             return None
     def get_rest_of_departures(self,day,link,current_time):
+        """
+        Unused hopefully.
+        """
         if link not in self.data[day]:
             return none
         index1 = [np.searchsorted(self.data[day][link][0:,0],current_time)]
@@ -256,6 +276,9 @@ class stop_time_table():
 
     def get_next_route(self,day,link,route,current_time):
         import numpy as np
+        """
+        Unused, hopefully
+        """
         index = self.data[day][link][np.searchsorted(self.data[day][link][0:,0],current_time)]
         for row in self.data[day][link][index:]:
             if row[2] == route:
@@ -263,6 +286,9 @@ class stop_time_table():
         return None
       
     def get_next_departure_route(self,day,link,current_time,route):
+        """
+        Another unused method
+        """
         index = np.searchsorted(self.data[day][link][0:,0],current_time)
         if index >= self.data[day][link].shape[0]:
             return None
@@ -272,6 +298,9 @@ class stop_time_table():
                 return row         
         return None
     def get_time_table(self,day):
+        """
+        This should have being used instead of the method in network.py, but I forgot about it. So this is unused.
+        """
         output = []
         for link in self.data[day]:
             df = self.data[link][day]
@@ -285,6 +314,7 @@ class stop_time_table():
     def add_to_database(self, df):
         """
         Need CRUD method for getting this information into a database, presumably for scaling application
+        Unused. In the future we hope to put the timetables into the database.
         """
         
         from sqlalchemy import create_engine

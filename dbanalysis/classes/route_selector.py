@@ -9,19 +9,21 @@ class selector():
 
     def __init__(self):
         import json
+        import os
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         from dbanalysis.stop_tools import stop_getter
-        self.routes = json.loads(open('/home/student/dbanalysis/dbanalysis/resources/trimmed_routes.json','r').read())
-        self.stops_dict = json.loads(open('/home/student/dbanalysis/dbanalysis/resources/stops_trimmed.json','r').read())
+        self.routes = json.loads(open(BASE_DIR + '/resources/trimmed_routes.json','r').read())
+        self.stops_dict = json.loads(open(BASE_DIR+'/resources/stops_trimmed.json','r').read())
         self.unavailable_routes = []
-        f = open('/data/linear_models3/errorlog.log','r')
-        text = f.read()
-        arr = text.split('\n')[:-1]
-        for line in arr:
-            l = line.split(' ')
-            p = l[4].split('_')
-            self.unavailable_routes.append([p[0],int(p[1])])
+        #f = open('/data/linear_models3/errorlog.log','r')
+        #text = f.read()
+        #arr = text.split('\n')[:-1]
+        #for line in arr:
+        #    l = line.split(' ')
+        #    p = l[4].split('_')
+        #    self.unavailable_routes.append([p[0],int(p[1])])
             
-        f.close()
+        #f.close()
 
     def return_all_routes(self):
         return {'routes':[route for route in self.routes if route not in ['47','68X']]}

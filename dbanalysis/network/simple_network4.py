@@ -7,7 +7,7 @@ Loads all of the required classes and tries to answer all app requests.
 Includes working, fast, version of dijkstra
 
 """
-
+import os
 import pandas as pd
 from math import inf
 from threading import Thread
@@ -21,13 +21,15 @@ class simple_network():
         Gather all of the resources needed. If build is true, load all of stops and stop link models. 
         """
         import json
-        self.routes = json.loads(open('/home/student/dbanalysis/dbanalysis/resources/trimmed_routes.json','r').read())       
+        import os
+        self.BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        self.routes = json.loads(open(self.BASE_DIR + '/resources/trimmed_routes.json','r').read())       
         from dbanalysis.classes import neural_stop 
         from dbanalysis.stop_tools import stop_getter,stop_finder
         import pickle
         from dbanalysis.classes import route_selector
         from dbanalysis.classes import time_tabler_refac2 as time_tabler
-        with open('/home/student/dbanalysis/dbanalysis/resources/new_stops_dict.bin','rb') as handle:
+        with open(self.BASE_DIR + '/resources/new_stops_dict.bin','rb') as handle:
             self.stops_dict = pickle.load(handle)
         self.stop_getter = stop_getter()
         self.selector = route_selector.selector()
@@ -41,7 +43,7 @@ class simple_network():
             return None
         count = 0
         import os
-        all_models = set(os.listdir('/data/neural_models'))
+        all_models = set(os.listdir(self.BASE_DIR+'/resources/models/neural_models3'))
         # for every route and variation, load the stop link models in that list,
         #provided they haven't already been loaded
         for route in self.routes:
@@ -81,11 +83,12 @@ class simple_network():
     def properly_add_foot_links(self):
         """
         Adds the walking links described in gtfs/transfers.txt.
-        Adds all foot links to the graph object.
+        Also adds the foot links that the stops already have defined. 
+        
         """
         import pickle
         from math import inf
-        with open('/home/student/dbanalysis/dbanalysis/resources/transfers.bin','rb') as handle:
+        with open(self.BASE_DIR + '/resources/transfers.bin','rb') as handle:
             transfers = pickle.load(handle)
         handle.close()
         for n in self.nodes:
@@ -121,11 +124,11 @@ class simple_network():
         from math import inf
         import pickle
         #load a graph object
-        with open('/home/student/db/network/graphobject.bin','rb') as handle:
+        with open(self.BASE_DIR+'/network/graphobject.bin','rb') as handle:
             self.graph = pickle.load(handle)
         handle.close()
         #load the graph weights
-        with open('/home/student/db/network/weightsobject.bin','rb') as handle:
+        with open(self.BASE_DIR+'/network/weightsobject.bin','rb') as handle:
             self.weights = pickle.load(handle)
         handle.close()
         #most of the following code is deprecated since we switched to using the graph object.
@@ -194,7 +197,7 @@ class simple_network():
                     #X['matrix']['vappr']=10.0
                     
                     
-                    
+                    #run this data frame on the route described in the pattern
                     self.run_route(X['matrix'],X['pattern'])
            
                 #unfortunately, the routes in 'routes' and the routes in the time tabler differ slightly
@@ -405,7 +408,7 @@ class simple_network():
     def main_dijkstra(self,day,start_time,graph,weights,finish_stops,time_weight=1,transfer_weight=5000,walking_weight=5,max_bus_wait=3000):
         """
         Actual implementation of dijkstra's algorithm on time dependant(ish) graph
-        This is... legitimately... a disaster.
+        
         In this implementation, every 'routeid' between stops essentially becomes its own edge and also its own node.
         A 'stop' becomes a point where a bunch of these nodes all have connecting edges, and the time cost for them is 0. Switching here though, counts as a transfer which carries it's own cost.
 
@@ -487,6 +490,7 @@ class simple_network():
             
             if current_route[0] != 't':
                 #push a transfer for this stop
+                # we push the routeid as 't' + the name of the route that was arrived on. This is to avoid trying to take the route again.
                 new_weight = calculate_weights(current_time,walking_sections,transfers+1)
                
                 heapq.heappush(to_visit,[new_weight,current_time,transfers+1,walking_sections,current_node,'t'+current_route])
@@ -518,7 +522,7 @@ class simple_network():
                         time = self.next_stop_route(day,current_time,current_node,link_name,route)
                         if time is None:
                             continue
-                        #if this involves waiting for long than the maximum waiting time allowed,
+                        #if this involves waiting for longer than the maximum waiting time allowed,
                         # then skip ahead to the next link
                         wait_time = time[0] - current_time
                         time = time[1]
@@ -539,7 +543,7 @@ class simple_network():
                     heapq.heappush(to_visit,[new_weight,time,number,walking,link_name,route])
 
                     route_to_write = current_route
-                    #this handles how we can walk back from the end node
+                    #this handles how we can walk back from the end node. 
                     if current_route[0] == 't':
                         route_to_write = current_route[1:]
                     if link_name and link_name not in back_links and link_name != current_node:
@@ -628,7 +632,9 @@ class simple_network():
 
     def add_user_nodes(self,origin_lat,origin_lon,end_lat,end_lon,start_time,graph,weights):
         """
-        Temporarily add the user's origin and destination as dummy nodes on the graph.
+        Temporarily add the user's origin and destination to the graph.
+        The user's origin is added, and the stops it links to are given walking weights.
+        The destination is added, and the stops it links to are given links to the destination.
         """
         from math import inf
         self.closest_stops_to_origin = [stop for stop in\

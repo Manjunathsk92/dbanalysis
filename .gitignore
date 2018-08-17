@@ -7,3 +7,4 @@
 /dbanalysis/network/simple_network_with_tables.bin
 /dbanalysis/network/timetables_dump.bin
 /dbanalysis/network/simple_network_dump.bin
+/dbanalysis/tests/networkpickle.bin

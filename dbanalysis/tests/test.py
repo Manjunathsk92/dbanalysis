@@ -7,11 +7,13 @@ class test(unittest.TestCase):
     import time
     
     def test_time_tabler(self):
-               
+        import os
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))        
         import json
+        
         from dbanalysis.classes import time_tabler_refac2
         time_tabler = time_tabler_refac2.time_tabler()
-        routes = json.loads(open('/home/student/dbanalysis/dbanalysis/resources/trimmed_routes.json','r').read())
+        routes = json.loads(open(BASE_DIR+'/resources/trimmed_routes.json','r').read())
         rs = {}
         for route in routes:
             rs[route] = []
@@ -46,11 +48,12 @@ class test(unittest.TestCase):
         """
         Check that the stop finder returns clusters of nearest stops
         """
-      
+        import os
         import pickle
         from dbanalysis.stop_tools import stop_finder
         stop_finder = stop_finder()
-        with open('/home/student/dbanalysis/dbanalysis/resources/new_stops_dict.bin', 'rb') as handle:
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        with open(BASE_DIR+'/resources/new_stops_dict.bin', 'rb') as handle:
             stops = pickle.load(handle)
         handle.close()
         
@@ -71,15 +74,17 @@ class test(unittest.TestCase):
         """
         Checks that the stop getter can return the shapes and get the distances between randomly popped stops
         """
-        return None
+       
         from dbanalysis.stop_tools import stop_getter
         import pickle
+        import os
         s_getter = stop_getter()
-        with open('/home/student/dbanalysis/dbanalysis/resources/new_stops_dict.bin','rb') as handle:
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        with open(BASE_DIR+'/resources/new_stops_dict.bin','rb') as handle:
             stops = pickle.load(handle)
         handle.close()
         import json
-        routes = json.loads(open('/home/student/dbanalysis/dbanalysis/resources/trimmed_routes.json','r').read())
+        routes = json.loads(open(BASE_DIR+'/resources/trimmed_routes.json','r').read())
         for i in range(20):
             r = routes.popitem()
             a = r[1]
@@ -108,7 +113,7 @@ class test(unittest.TestCase):
         Also use this opportunity to insure that we have models for everything      
 
         """
-        return None
+        
         from dbanalysis.classes import route_selector
         selector = route_selector.selector()
         all_routes = selector.return_all_routes()
@@ -119,11 +124,11 @@ class test(unittest.TestCase):
             self.assertEqual(isinstance(selector.return_variations(r),dict),True)
             for i in range(len(selector.return_variations(r)[r])):
                 self.assertEqual(isinstance(selector.stops_in_route(r,i),list),True)    
-                self.assertEqual(selector.get_unavailable(r,i) is True or selector.get_unavailable(r,i) is False,True)
+                #self.assertEqual(selector.get_unavailable(r,i) is True or selector.get_unavailable(r,i) is False,True)
                 
                 
-        for pair in selector.unavailable_routes:
-            self.assertEqual(selector.get_unavailable(pair[0],pair[1]),True) 
+        #for pair in selector.unavailable_routes:
+        #    self.assertEqual(selector.get_unavailable(pair[0],pair[1]),True) 
     def test_model_coverage(self):
         """
         Tests that there are models for every stop link
@@ -132,10 +137,11 @@ class test(unittest.TestCase):
         
      
         import os
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         import json
         fails=0
         total = 0
-        routes = json.loads(open('/home/student/db/resources/trimmed_routes.json','r').read())
+        routes = json.loads(open(BASE_DIR+'/resources/trimmed_routes.json','r').read())
         for route in routes:
             for v in routes[route]:
                 for i in range(1, len(v) -1 ):
@@ -149,7 +155,7 @@ class test(unittest.TestCase):
         """
         Tests that the network object can be built from scratch. Takes forever.
         """
-        return None         
+        return None 
         from dbanalysis.network import simple_network4
         import pickle
         import time
@@ -162,7 +168,7 @@ class test(unittest.TestCase):
         for node in n.nodes:
 
             n.nodes[node].timetable.concat_and_sort()
-        with open('/data/done2.bin','wb') as handle:
+        with open('networkpickle.bin','wb') as handle:
             pickle.dump(n,handle,protocol=pickle.HIGHEST_PROTOCOL)
         for node in n.nodes:
             self.assertEqual(len(n.nodes[node].timetable.data) > 0, True)
@@ -178,10 +184,12 @@ class test(unittest.TestCase):
     def test_all_nodes_present(self):
         import pickle
         from dbanalysis.network import simple_network4
-        with open('/data/done2.bin','rb') as handle:
+        with open('networkpickle.bin','rb') as handle:
             n=pickle.load(handle)
         import json
-        routes = json.loads(open('/home/student/db/resources/trimmed_routes.json','r').read())
+        import os
+        BASE_DIR =  os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        routes = json.loads(open(BASE_DIR+'/resources/trimmed_routes.json','r').read())
         for route in routes:
 
             for variation in routes[route]:
@@ -206,7 +214,7 @@ class test(unittest.TestCase):
          
         import pickle
         from dbanalysis.network import simple_network4
-        with open('/data/done2.bin','rb') as handle:
+        with open('networkpickle.bin','rb') as handle:
             n=pickle.load(handle)
         max_lat = 53.4
         import random
@@ -268,10 +276,12 @@ class test(unittest.TestCase):
         # need to find a way to do this for more routes, and if the response isn't none, then compare 
         import pickle
         from dbanalysis.network import simple_network4
-        with open('/data/done2.bin','rb') as handle:
+        with open('networkpickle.bin','rb') as handle:
             n=pickle.load(handle)
         import json
-        with open('/home/student/db/resources/trimmed_routes.json','r') as handle:
+        import os
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        with open(BASE_DIR+'/resources/trimmed_routes.json','r') as handle:
             routes = json.loads(handle.read())
         handle.close()
         print(routes)
@@ -339,7 +349,7 @@ class test(unittest.TestCase):
         import pickle
         import numpy as np
         from dbanalysis.network import simple_network4
-        with open('/data/done2.bin','rb') as handle:
+        with open('networkpickle.bin','rb') as handle:
             n=pickle.load(handle)
         all_time_tables = 0
         with_data = 0 
@@ -413,12 +423,14 @@ class test(unittest.TestCase):
         import pickle
         import random
         from dbanalysis.network import simple_network4
-        with open('/data/done2.bin','rb') as handle:
+        with open('networkpickle.bin','rb') as handle:
             n=pickle.load(handle)
         print(n)
+        import os
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         handle.close()
         import json
-        with open('/home/student/db/resources/trimmed_routes.json','r') as handle:
+        with open(BASE_DIR+'/resources/trimmed_routes.json','r') as handle:
             routes = json.loads(handle.read())
         handle.close()
         import datetime

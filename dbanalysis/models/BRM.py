@@ -130,6 +130,9 @@ class BRModel():
         del(test)
         del(preds)        
     def build_model():
+        """
+        Was used for random forest,linear model etc
+        """
         import numpy as np
         if self.verbose:
             print('building model')
@@ -140,6 +143,9 @@ class BRModel():
         self.model = self.rgr.predict(self.data[features].values,self.data[msk].values)
         del(self.data)
     def dump_model(self):
+        """
+        Never used
+        """
         import pickle
         import time
         t = int(time.time())

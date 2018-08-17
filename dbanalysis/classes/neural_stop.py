@@ -2,17 +2,9 @@
 @diarmuidmorgan
 
 Updated stop class to use MLPRegressor and scaling instead of linear models.
-
-The class representing a stop
-
-Needs changing to reflect different route ids (for dwell time) etc
-
-Can also be used to build analysis of the network, by setting train_model to False and just 
-using these classes as holders for their data
-
-Will define a set of functions to generate info on that data or something. Probably. Later
-
-Need to add support for routes
+Acts as a holder for timetables and models. Has a method for predicting.
+However, in our app, the models are never stored by network after time tables are generated.
+Essentially this class is only used as a holder for it's timetable, after the models have being built.
 
 
 """
@@ -27,6 +19,8 @@ from sklearn.preprocessing import StandardScaler as ss
 class stop():
 
     def __init__(self,stop_id,stop_info,write_errors=False):
+        import os
+        self.BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.stop_id = str(stop_id)
         self.stop_info = stop_info
         self.write_errors = True
@@ -36,6 +30,7 @@ class stop():
         self.links = set()
         self.Y_scalers = {}
         self.X_scalers = {}
+        
         self.use_multipliers = {}
         self.multipliers = {}
         self.link_distances = {}
@@ -48,7 +43,7 @@ class stop():
         
         if link not in self.links:
             try:
-                with open('/data/neural_models3/'+self.stop_id+'_'+str(link)+'.bin','rb') as handle:
+                with open(self.BASE_DIR+'/resources/models/neural_models3/'+self.stop_id+'_'+str(link)+'.bin','rb') as handle:
                     d = pickle.load(handle)
                 handle.close()
                 if 'multiplier' in d:
@@ -71,13 +66,16 @@ class stop():
             return True
 
     def predict_multiple(self,df,link):
-        
+        """
+        Predicts travel time from this stop to its link.
+        """
         features = ['rain','temp','hour','day']
         df['hour'] = df['actualtime_arr_to'] //3600
         df['actualtime_arr_from'] = df['actualtime_arr_to'] 
         X = self.X_scalers[link].transform(df[features])
         traveltime = self.models[link].predict(X)
         traveltime = self.Y_scalers[link].inverse_transform(traveltime)
+        #if this model needs a multiplier, use it
         if self.use_multipliers[str(link)]:
             traveltime = traveltime * self.multipliers[str(link)]
         a=0
@@ -89,6 +87,7 @@ class stop():
             #print('mean traveltime:',traveltime.mean())
             #print('percent lees than zero:',len(traveltime[traveltime <0]) / (len(traveltime) + 1))
             if self.write_errors:
+                #record this error in the log
                 data = {'error':[self.stop_id, link,traveltime.min(),traveltime.mean()]}
                 f=open('modelerrors.log','a')
                 import json
@@ -97,7 +96,8 @@ class stop():
                 f.close()
              
             #print ( len(traveltime[traveltime < 0]))
-            
+            #correcting any negative predictions. Ideally replace with a non negative mean value.
+            #Othersie, we use the distance and get the time using a speed of 30 miles an hour
             if len(traveltime[traveltime > 0]) > 0:
                 
                 m = traveltime[traveltime > 0].mean()
@@ -119,6 +119,7 @@ class stop():
             f=open('modelerrors.log','a')
             import json
             string = json.dumps(data)
+            #record this error in the log. We never found a way to fix the bad predictions
             f.write(string + '\n')
             f.close()
                 
@@ -130,9 +131,15 @@ class stop():
          
             
     def add_to_time_table(self,link,df):
+        """
+        Add data frame to this stop's time table
+        """
         self.timetable.add_times(df,link)        
     
     def single_predict(self,row,link):
+        """
+        Method unused
+        """
         features = ['rain','temp','vappr','hour','hour2','hour3','hour4','day','day2','day3','day4']
         row['hour'] = row['actualtime_arr_to'] //3600
         for i in range(2,5):
@@ -154,10 +161,12 @@ class stop():
 
     def get_foot_links(self):
         """
-        Super inefficient method. Fins the closest five stops to this stop and adds them as footlinks.
+        Super inefficient method. Finds the closest five stops to this stop and adds them as footlinks.
         """
         import pickle
-        with open('/home/student/dbanalysis/dbanalysis/resources/stop_foot_distance.pickle','rb') as handle:
+        import os
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        with open(BASE_DIR+'/resources/stop_foot_distance.pickle','rb') as handle:
             foot_stops = pickle.load(handle)
         for x in foot_stops[str(self.stop_id)]:
             

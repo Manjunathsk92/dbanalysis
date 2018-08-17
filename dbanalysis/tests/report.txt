@@ -19,3 +19,25 @@ Route finding failed on 17 sets of coordinates out of 100 ****
 Time table alignment unable for0 out of 95****
 4523 time tables with data out of 4575***  
 0 time table rows had errors out of 1851807****  
+0 predictions out of 467**** 
+Route finding failed on 9 sets of coordinates out of 100 ****
+Time table alignment unable for0 out of 99****
+4482 time tables with data out of 4575***  
+0 time table rows had errors out of 1851807****  
+*******Test report for 2018-08-17 16:16:58.810725*******
+Network object constructed and all timetables generated in 400.4099476337433seconds
+0 predictions out of 467**** 
+Time table alignment unable for0 out of 99****
+4481 time tables with data out of 4575***  
+0 time table rows had errors out of 1851807****  
+*******Test report for 2018-08-17 17:51:41.889011*******
+Network object constructed and all timetables generated in 406.7151098251343seconds
+Route finding failed on 17 sets of coordinates out of 100 ****
+Time table alignment unable for0 out of 100****
+4445 time tables with data out of 4575***  
+0 time table rows had errors out of 1851807****  
+0 predictions out of 467**** 
+Route finding failed on 12 sets of coordinates out of 100 ****
+Time table alignment unable for0 out of 96****
+4431 time tables with data out of 4575***  
+0 time table rows had errors out of 1851807****  
