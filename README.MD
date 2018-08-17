@@ -9,7 +9,7 @@ Includes:
 
 
 The principal files used in our app are:
-* final_notebooks - The notebooks from which our report is derived. The comparisons of models on individual routes are in the "chained model comparisons" and "whole route model comparisons" folders.
+* final_notebooks - The notebooks from which our report is derived. The comparisons of models on individual routes are in the "chained model comparisons" and "whole route model comparisons", and "chained_models_without_upper_quantile" folders.
 * notebooks - Many other notebooks created over the course of the project. Not intended for presentation.
 * dbanalysis/network/simple_network4.py - The final implementation of the network object.
 * dbanalysis/classes/neural_stop.py - The final implementation of the stop object
@@ -19,5 +19,16 @@ The principal files used in our app are:
 * dbanalysis/models/build_neural_models.py The script used to actually build all of the stop link models. Also contains the BRM.py model class that was used as a holder for whole route models.
 * dbanalysis/route_tools.py Contains the get_munged_route_data function that was used to split route files into individual stop link files.
 * dbanalysis/scripts Contains many scripts that were used throughout the process.
+
+
+## Running the tests
+
+To run our suite of tests move into the directory "/dbanalysis/tests" and run:
+```
+python test.py
+```
+```
+python test2.py
+```
 
 * Unfortunately, the models are not included in this package, and without them the app won't run.

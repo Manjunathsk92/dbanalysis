@@ -18,6 +18,9 @@ class weather_getter():
 
     
     def get_weather(self):
+        """
+        Get weather from the database, add time info, resample, and return
+        """
         df_weather=self.weather_5days
         #print(df_weather)
         df_weather['date']=pd.to_datetime(df_weather['date'])

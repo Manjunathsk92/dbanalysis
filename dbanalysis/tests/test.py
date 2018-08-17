@@ -7,6 +7,10 @@ class test(unittest.TestCase):
     import time
     
     def test_time_tabler(self):
+        """
+        Checks that all is as it should be. There are 19 route variations in the time tabler that we don't have full models for.
+        There are 3 patterns over all in the routes file we use that somehow didn't end up in the time tabler.
+        """
         import os
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))        
         import json
@@ -46,7 +50,8 @@ class test(unittest.TestCase):
         self.assertEqual(missing_patterns < 3,True)
     def test_stop_finder(self):
         """
-        Check that the stop finder returns clusters of nearest stops
+        Check that the stop finder returns clusters of nearest stops.
+        Uses the coordinates of 100 random stops
         """
         import os
         import pickle
@@ -58,9 +63,9 @@ class test(unittest.TestCase):
         handle.close()
         
         for i in range(100):
-            
-            s = stops.popitem()
-            s= s[1]
+            import random
+            stop_id = random.choice([k for k in stops.keys()])
+            s= stops[stop_id]
             response = stop_finder.find_closest_stops(s['lon'],s['lat'])
             
             self.assertEqual(isinstance(response,list), True)
@@ -86,8 +91,9 @@ class test(unittest.TestCase):
         import json
         routes = json.loads(open(BASE_DIR+'/resources/trimmed_routes.json','r').read())
         for i in range(20):
-            r = routes.popitem()
-            a = r[1]
+            import random
+            r = random.choice([r for r in routes.keys()])
+            a = routes[r]
             for v in a:
                 arr = v[1:]
                 stopA = arr[0]
@@ -131,7 +137,7 @@ class test(unittest.TestCase):
         #    self.assertEqual(selector.get_unavailable(pair[0],pair[1]),True) 
     def test_model_coverage(self):
         """
-        Tests that there are models for every stop link
+        Tests that there are models for every stop link in our routes file
         """
         
         
@@ -151,11 +157,11 @@ class test(unittest.TestCase):
         print(total,fails)
         
         self.assertEqual(fails==0,True)
-    def test_build_network(self):
+    def test_1build_network(self):
         """
         Tests that the network object can be built from scratch. Takes forever.
         """
-        return None 
+        
         from dbanalysis.network import simple_network4
         import pickle
         import time
@@ -166,11 +172,12 @@ class test(unittest.TestCase):
         n.properly_add_foot_links()
         n.generate_time_tables()
         for node in n.nodes:
-
+            print(node)
             n.nodes[node].timetable.concat_and_sort()
         with open('networkpickle.bin','wb') as handle:
             pickle.dump(n,handle,protocol=pickle.HIGHEST_PROTOCOL)
         for node in n.nodes:
+            print(node)
             self.assertEqual(len(n.nodes[node].timetable.data) > 0, True)
         del(n)
         end_time = time.time() - t1
@@ -265,7 +272,7 @@ class test(unittest.TestCase):
 
         Are the last stops all missing?
 
-        At the end, we validate that the percentage of failures is less than some given number (10%)
+        At the end, we validate that the percentage of failures is less than some given number (5%) and the failures are printed to file.
 
         """
      
@@ -307,7 +314,7 @@ class test(unittest.TestCase):
                 #time = random.uniform(36000,72000)
                     time = 0
                     
-                    arrival,departure=n.quick_predict(day,route,v_num,stopA,stopB,time)
+                    arrival,arrival_next=n.quick_predict(day,route,v_num,stopA,stopB,time)
                     self.assertEqual(isinstance(arrival,int) or arrival is None or isinstance(arrival,float),True)
                     if arrival is None:
             
@@ -315,7 +322,7 @@ class test(unittest.TestCase):
                         continue
                 
                 
-                    self.assertEqual(arrival < departure,True)
+                    self.assertEqual(arrival < arrival_next,True)
                     success = True
                     break
                 if not success:
@@ -415,6 +422,8 @@ class test(unittest.TestCase):
         The predict method checks every single route, and fails on less than 0.05. This test fails on about 30%?
 
         Maybe there is no time to fix it. At least the prediction api works.
+    
+        The number had to be adjusted here to only go as far as the second last stop in the route. Not perfect, but not so bad either.
         """
          
         from dbanalysis.classes import route_selector

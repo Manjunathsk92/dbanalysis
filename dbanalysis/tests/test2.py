@@ -60,6 +60,7 @@ class test(unittest.TestCase):
         with open('/data/done2.bin','wb') as handle:
             pickle.dump(n,handle,protocol=pickle.HIGHEST_PROTOCOL)
         for node in n.nodes:
+            print(node)
             self.assertEqual(len(n.nodes[node].timetable.data) > 0, True)
         del(n)
         end_time = time.time() - t1

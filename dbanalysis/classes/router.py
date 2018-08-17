@@ -1,5 +1,9 @@
 class router():
+    """ 
+    This class was used as a holder for the large neural network models.
+    Not implemented in this version.
 
+    """
 
     def __init__ (self,route,variation, array):
 

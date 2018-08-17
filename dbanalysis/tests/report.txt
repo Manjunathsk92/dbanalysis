@@ -41,3 +41,24 @@ Route finding failed on 12 sets of coordinates out of 100 ****
 Time table alignment unable for0 out of 96****
 4431 time tables with data out of 4575***  
 0 time table rows had errors out of 1851807****  
+*******Test report for 2018-08-17 22:31:45.679130*******
+Network object constructed and all timetables generated in 397.4059724807739seconds
+0 predictions out of 467**** 
+Route finding failed on 11 sets of coordinates out of 100 ****
+Time table alignment unable for0 out of 99****
+4158 time tables with data out of 4575***  
+0 time table rows had errors out of 1851807****  
+*******Test report for 2018-08-17 22:44:39.506487*******
+Network object constructed and all timetables generated in 393.1133363246918seconds
+0 predictions out of 467**** 
+Route finding failed on 11 sets of coordinates out of 100 ****
+Time table alignment unable for0 out of 99****
+4138 time tables with data out of 4575***  
+0 time table rows had errors out of 1851807****  
+0 predictions out of 467**** 
+Route finding failed on 10 sets of coordinates out of 100 ****
+Time table alignment unable for0 out of 98****
+*******Test report for 2018-08-17 23:07:34.963460*******
+Network object constructed and all timetables generated in 389.13346099853516seconds
+0 predictions out of 467**** 
+Time table alignment unable for0 out of 99****

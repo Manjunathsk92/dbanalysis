@@ -1,0 +1,468 @@
+1_0 Towards  Sandymount
+1_1 Towards  Sandymount
+1_2 Towards  Sandymount
+1_3 Towards  O'Connell Street
+1_4 Towards  Shanard Road
+1_5 Towards  O'Connell Street
+102_0 Towards  Dublin Airport
+102_1 Towards  Sutton Station
+102_2 Towards  Sutton Station
+104_0 Towards  DCU
+104_1 Towards  Clontarf Road
+11_0 Towards  Sandyford B.D.
+11_1 Towards  O'Connell Street
+11_2 Towards  St Pappin's Rd
+11_3 Towards  Parnell Square
+111_0 Towards  Dalkey
+111_1 Towards  Brides Glen
+111_2 Towards  Marine Road
+114_0 Towards  Blackrock DART
+114_1 Towards  Ticknock
+116_0 Towards  Whitechurch
+116_1 Towards  Parnell Sq
+118_0 Towards  Eden Quay
+120_0 Towards  Ashtown Stn
+120_1 Towards  Ashtown Stn
+120_2 Towards  Parnell St
+120_3 Towards  Ballsbridge
+122_0 Towards  Drimnagh Road
+122_1 Towards  Parnell Square
+122_2 Towards  Ashington
+122_3 Towards  O'Connell Street
+123_0 Towards  Marino
+123_1 Towards  O'Connell Street
+123_2 Towards  Kilnamanagh Rd
+123_3 Towards  O'Connell Street
+13_0 Towards  O'Connell St
+13_1 Towards  Grange Castle
+13_2 Towards  Grange Castle
+13_3 Towards  Grange Castle IAWS
+13_4 Towards  Grange Castle IAWS
+13_5 Towards  O'Connell St
+13_6 Towards  Grange Castle
+13_7 Towards  Grange Castle
+13_8 Towards  Harristown
+13_9 Towards  Harristown
+13_10 Towards  Harristown
+13_11 Towards  Harristown
+13_12 Towards  O'Connell Street
+13_13 Towards  Harristown
+13_14 Towards  Harristown
+13_15 Towards  Harristown
+13_16 Towards  Harristown
+13_17 Towards  O'Connell Street
+130_0 Towards  Castle Ave
+130_1 Towards  Abbey Street
+14_0 Towards  Beaumont
+14_1 Towards  Dundrum Luas
+14_2 Towards  Beaumont
+140_0 Towards  Sandymount
+140_1 Towards  Rathmines
+140_2 Towards  O'Connell St
+140_3 Towards  IKEA
+140_4 Towards  O'Connell St
+142_0 Towards  UCD
+142_1 Towards  Portobello
+142_2 Towards  Coast Road
+142_3 Towards  UCD
+145_0 Towards  Heuston Station
+145_1 Towards  Heuston Station
+145_2 Towards  Heuston Station
+145_3 Towards  Heuston Station
+145_4 Towards  Heuston Station
+145_5 Towards  Heuston Station
+145_6 Towards  Bray
+145_7 Towards  Belfield Flyover
+145_8 Towards  Kilmacanogue
+145_9 Towards  Ballywaltrim
+145_10 Towards  Ballywaltrim
+145_11 Towards  Heuston Station
+145_12 Towards  Aston Quay
+145_13 Towards  Ballywaltrim
+145_14 Towards  Heuston Station
+14C_0 Towards  D'Olier Street
+14C_1 Towards  Eden Quay
+15_0 Towards  Hawkins St
+15_1 Towards  Ballycullen Road
+15_2 Towards  Clongriffin
+15_3 Towards  Eden Quay
+150_0 Towards  Rossmore
+150_1 Towards  Hawkins Street
+150_2 Towards  Hawkins Street
+151_0 Towards  Foxborough
+151_1 Towards  Docklands
+151_2 Towards  Docklands
+151_3 Towards  Eden Quay
+15A_0 Towards  Limekiln Ave
+15A_1 Towards  Ringsend Road
+15B_0 Towards  Stocking Ave
+15B_1 Towards  Ringsend Road
+15D_0 Towards  Whitechurch
+15D_1 Towards  Ringsend Road
+16_0 Towards  Ballinteer
+16_1 Towards  Ballinteer
+16_2 Towards  Ballinteer
+16_3 Towards  Ballinteer
+16_4 Towards  Dublin Airport
+161_0 Towards  Rockbrook
+161_1 Towards  Dundrum LUAS
+161_2 Towards  Dundrum LUAS
+16C_0 Towards  O'Connell Street
+16C_1 Towards  O'Connell Street
+16C_2 Towards  O'Connell Street
+16C_3 Towards  O'Connell Street
+17_0 Towards  Blackrock DART
+17_1 Towards  Blackrock DART
+17_2 Towards  Blackrock DART
+17_3 Towards  UCD
+17_4 Towards  Vincents Hosp
+17_5 Towards  Rialto
+17_6 Towards  Rialto
+17_7 Towards  Rialto
+17_8 Towards  Blackrock DART
+17A_0 Towards  Kilbarrack
+17A_1 Towards  Kilbarrack
+17A_2 Towards  Blanch'stown SC
+17A_3 Towards  Blanch'stown SC
+18_0 Towards  Sandymount
+184_0 Towards  Bray DART
+184_1 Towards  Newtownmountkennedy
+185_0 Towards  Shop River
+185_1 Towards  Palermo
+185_2 Towards  Palermo
+185_3 Towards  Shop River
+185_4 Towards  Bray DART
+185_5 Towards  Bray DART
+185_6 Towards  Bray DART
+185_7 Towards  Bray DART
+185_8 Towards  Sunnybank
+220_0 Towards  Ladys Well Road
+220_1 Towards  Ballymun
+220_2 Towards  Ladys Well Road
+220_3 Towards  Ballymun
+236_0 Towards  Damastown
+236_1 Towards  Blanchardstown S.C.
+238_0 Towards  Lady's Well
+238_1 Towards  Lady's Well
+238_2 Towards  Tyrrelstown
+239_0 Towards  Liffey Valley
+239_1 Towards  Blanchardstown SC
+25_0 Towards  Merrion Sq
+25_1 Towards  Dodsboro
+25A_0 Towards  Merrion Sq
+25A_1 Towards  Lucan S.C.
+25B_0 Towards  Merrion Sq
+25B_1 Towards  Adamstown
+25B_2 Towards  Merrion Sq
+25D_0 Towards  Merrion Square
+25D_1 Towards  Adamstown
+25X_0 Towards  Dodsboro
+25X_1 Towards  UCD
+25X_2 Towards  UCD
+26_0 Towards  Bachelors Walk
+26_1 Towards  Palmerstown
+26_2 Towards  Merrion Square
+27_0 Towards  Eden Quay
+27_1 Towards  Jobstown
+27_2 Towards  Clare Hall
+27_3 Towards  Clare Hall
+27_4 Towards  Jobstown
+27_5 Towards  Eden Quay
+270_0 Towards  Dunboyne
+270_1 Towards  Blanchardstown
+27A_0 Towards  Blunden Drive
+27A_1 Towards  Eden Quay
+27B_0 Towards  Harristown
+27B_1 Towards  Coolock Lane
+27B_2 Towards  Castletimon
+27B_3 Towards  Coolock Lane
+27B_4 Towards  Eden Quay
+27B_5 Towards  Eden Quay
+27B_6 Towards  Eden Quay
+27B_7 Towards  Eden Quay
+27B_8 Towards  Eden Quay
+27B_9 Towards  Eden Quay
+27B_10 Towards  Harristown
+27X_0 Towards  UCD
+27X_1 Towards  Clare Hall
+29A_0 Towards  Baldoyle
+29A_1 Towards  Abbey Street
+31_0 Towards  Howth Summit
+31_1 Towards  Howth DART
+31_2 Towards  Sutton X
+31_3 Towards  Talbot Street
+31A_0 Towards  Sheilmartin Rd
+31A_1 Towards  Talbot Street
+31B_0 Towards  Howth Summit
+31B_1 Towards  Talbot Street
+31B_2 Towards  Talbot Street
+31D_0 Towards  Baldoyle
+31D_1 Towards  DCU
+32_0 Towards  Malahide
+32_1 Towards  Talbot Street
+32X_0 Towards  Malahide
+32X_1 Towards  UCD
+33_0 Towards  Balbriggan
+33_1 Towards  Skerries
+33_2 Towards  Skerries
+33_3 Towards  Abbey St
+33_4 Towards  Abbey St
+33_5 Towards  Mountjoy Sq
+33A_0 Towards  Balbriggan
+33A_1 Towards  Skerries
+33A_2 Towards  Swords
+33A_3 Towards  Swords
+33A_4 Towards  Skerries
+33B_0 Towards  Portrane
+33B_1 Towards  Portrane
+33B_2 Towards  Swords Pavilions
+33B_3 Towards  Donabate
+33D_0 Towards  Portrane
+33D_1 Towards  St Stephen's Green
+33X_0 Towards  Balbriggan
+33X_1 Towards  Skerries
+33X_2 Towards  Stephen's Gn
+37_0 Towards  Bachelor's Walk
+37_1 Towards  Blanchardstown SC
+37_2 Towards  Wilton Terrace
+38_0 Towards  Burlington Road
+38_1 Towards  Burlington Road
+38_2 Towards  Damastown
+38_3 Towards  Damastown
+38_4 Towards  Parnell Sq
+38A_0 Towards  Damastown
+38A_1 Towards  Parnell Sq
+38A_2 Towards  Burlington Road
+38A_3 Towards  Burlington Road
+38B_0 Towards  Damastown
+38B_1 Towards  Burlington Road
+38B_2 Towards  O'Connell Street
+38D_0 Towards  Burlington Road
+38D_1 Towards  Damastown
+39_0 Towards  Ongar
+39_1 Towards  Burlington Road
+39_2 Towards  Ongar
+39_3 Towards  Bachelors Walk
+39A_0 Towards  Ongar
+39A_1 Towards  Aston Quay
+39A_2 Towards  Bachelor's Walk
+39A_3 Towards  UCD
+39A_4 Towards  Ongar
+39A_5 Towards  UCD
+39X_0 Towards  Ongar
+39X_1 Towards  Burlington Road
+4_0 Towards  Monkstown Ave
+4_1 Towards  O'Connell St
+4_2 Towards  Harristown
+4_3 Towards  O'Connell St
+40_0 Towards  Liffey Valley
+40_1 Towards  O'Connell Street
+40_2 Towards  O'Connell Street
+40_3 Towards  Liffey Valley
+40_4 Towards  Charlestown
+40_5 Towards  O'Connell St
+40_6 Towards  Charlestown
+40B_0 Towards  Toberburr
+40B_1 Towards  Toberburr
+40B_2 Towards  O'Connell St
+40D_0 Towards  Tyrrelstown
+40D_1 Towards  Tyrrelstown
+40D_2 Towards  Parnell St
+40D_3 Towards  Parnell St
+40D_4 Towards  Hollystown
+40D_5 Towards  Parnell St
+41_0 Towards  Swords Manor
+41_1 Towards  Swords Manor
+41_2 Towards  Swords Bus.Pk
+41_3 Towards  Swords Manor
+41_4 Towards  Abbey St
+41_5 Towards  Abbey St
+41_6 Towards  Abbey St
+41_7 Towards  Abbey St
+41_8 Towards  Swords Manor
+41_9 Towards  Swords Manor
+41A_0 Towards  Abbey St
+41B_0 Towards  Rolestown
+41B_1 Towards  Rolestown
+41B_2 Towards  Abbey St
+41C_0 Towards  Swords Manor
+41C_1 Towards  Abbey St
+41C_2 Towards  Abbey St
+41X_0 Towards  Swords Manor
+41X_1 Towards  Knocksedan
+41X_2 Towards  Knocksedan
+41X_3 Towards  UCD
+41X_4 Towards  UCD
+41X_5 Towards  UCD
+41X_6 Towards  UCD
+41X_7 Towards  UCD
+42_0 Towards  Portmarnock
+42_1 Towards  Talbot Street
+42D_0 Towards  Strand Road
+42D_1 Towards  DCU
+43_0 Towards  Swords Bus.Pk
+43_1 Towards  Glen Ellen
+43_2 Towards  Talbot Street
+43_3 Towards  Talbot Street
+44_0 Towards  Dundrum Road
+44_1 Towards  DCU
+44_2 Towards  Enniskerry
+44_3 Towards  Enniskerry
+44B_0 Towards  Glencullen
+44B_1 Towards  Dundrum Luas
+45A_0 Towards  Kilmacanogue
+45A_1 Towards  Dun Laoghaire
+45A_2 Towards  Kilmacanogue
+45A_3 Towards  Kilmacanogue
+45A_4 Towards  Dun Laoghaire
+45A_5 Towards  Dun Laoghaire
+46A_0 Towards  Parnell Square
+46A_1 Towards  Phoenix Park
+46A_2 Towards  Mountjoy Sq
+46A_3 Towards  Phoenix Pk
+46A_4 Towards  Westmoreland St
+46A_5 Towards  Phoenix Pk
+46A_6 Towards  Dun Laoghaire
+46A_7 Towards  UCD
+46A_8 Towards  Dun Laoghaire
+46A_9 Towards  Dun Laoghaire
+46A_10 Towards  Dun Laoghaire
+46A_11 Towards  D'Olier St
+46A_12 Towards  Dun Laoghaire
+46A_13 Towards  Phoenix Pk
+46E_0 Towards  Mountjoy Sq
+49_0 Towards  The Square
+49_1 Towards  Pearse St
+49_2 Towards  Pearse St
+51D_0 Towards  Woodford Hill
+51D_1 Towards  Waterloo Rd
+51X_0 Towards  UCD
+53_0 Towards  Dublin Ferryport
+53_1 Towards  Talbot Street
+54A_0 Towards  Kiltipper
+54A_1 Towards  Pearse St
+56A_0 Towards  Ringsend Road
+56A_1 Towards  The Square
+59_0 Towards  Killiney Hill
+59_1 Towards  Dun Laoghaire
+61_0 Towards  Whitechurch
+61_1 Towards  Rockbrook
+61_2 Towards  Eden Quay
+61_3 Towards  Eden Quay
+63_0 Towards  Kilternan
+63_1 Towards  Kilternan
+63_2 Towards  Kilternan
+63_3 Towards  Dun Laoghaire
+63_4 Towards  Dun Laoghaire
+63_5 Towards  Dun Laoghaire
+63_6 Towards  Dun Laoghaire
+65_0 Towards  Ballymore
+65_1 Towards  Ballyknockan
+65_2 Towards  Blessington
+65_3 Towards  Poolbeg Street
+65_4 Towards  Poolbeg Street
+65_5 Towards  Poolbeg Street
+65B_0 Towards  Citywest
+65B_1 Towards  Poolbeg Street
+66_0 Towards  Merrion Sq
+66_1 Towards  Maynooth
+66_2 Towards  Maynooth
+66_3 Towards  Merrion Sq
+66A_0 Towards  River Forest
+66A_1 Towards  Merrion Sq
+66B_0 Towards  Leixlip
+66B_1 Towards  Merrion Sq
+66X_0 Towards  Maynooth
+66X_1 Towards  Castletown
+66X_2 Towards  Maynooth
+66X_3 Towards  River Forest
+66X_4 Towards  UCD
+66X_5 Towards  UCD
+66X_6 Towards  UCD
+66X_7 Towards  UCD
+66X_8 Towards  UCD
+67_0 Towards  Maynooth
+67_1 Towards  Merrion Sq
+67X_0 Towards  Maynooth
+67X_1 Towards  Maynooth
+67X_2 Towards  Maynooth
+67X_3 Towards  UCD
+67X_4 Towards  UCD
+68_0 Towards  Conyngham Rd
+68_1 Towards  Greenogue
+68_2 Towards  Newcastle
+68A_0 Towards  Bulfin Road
+69_0 Towards  Conyngham Rd
+69_1 Towards  Rathcoole
+69X_0 Towards  Rathcoole
+7_0 Towards  Mountjoy Square
+7_1 Towards  Parnell Square
+7_2 Towards  Brides Glen
+7_3 Towards  Brides Glen
+70_0 Towards  Dunboyne
+70_1 Towards  Burlington Road
+70_2 Towards  Bachelors Walk
+70D_0 Towards  Dunboyne
+70D_1 Towards  DCU
+747_0 Towards  Airport Express
+747_1 Towards  Heuston Stn
+747_2 Towards  City Centre
+75_0 Towards  Dun Laoghaire
+75_1 Towards  Dun Laoghaire
+75_2 Towards  The Square
+75_3 Towards  The Square
+75_4 Towards  The Square
+757_0 Towards  Airport Express
+757_1 Towards  Charlotte Way
+76_0 Towards  The Square
+76_1 Towards  Chapelizod
+76A_0 Towards  The Square
+76A_1 Towards  Blanchardstown SC
+77A_0 Towards  Ringsend Road
+77A_1 Towards  Citywest
+77X_0 Towards  UCD Belfield
+79_0 Towards  Spiddal Pk
+79_1 Towards  Aston Quay
+79A_0 Towards  Parkwest
+79A_1 Towards  Aston Quay
+7A_0 Towards  Loughlinstown Pk
+7A_1 Towards  Loughlinstown Pk
+7A_2 Towards  Mountjoy Square
+7A_3 Towards  Parnell Square
+7B_0 Towards  Shankill
+7B_1 Towards  Mountjoy Square
+7D_0 Towards  Dalkey
+7D_1 Towards  Mountjoy Square
+83_0 Towards  Kimmage
+83_1 Towards  D'Olier Street
+83_2 Towards  Kimmage
+83_3 Towards  D'Olier Street
+83_4 Towards  Harristown
+83_5 Towards  Westmoreland St
+83_6 Towards  Charlestown
+83_7 Towards  Harristown
+83A_0 Towards  Kimmage
+83A_1 Towards  Kimmage
+83A_2 Towards  Harristown
+83A_3 Towards  Charlestown
+84_0 Towards  Newcastle
+84_1 Towards  Newcastle
+84_2 Towards  Newcastle
+84_3 Towards  Blackrock
+84_4 Towards  Blackrock
+84_5 Towards  Bray Station
+84A_0 Towards  Bray Station
+84A_1 Towards  Bray Station
+84A_2 Towards  Blackrock
+84A_3 Towards  St Vincents Hosp
+84X_0 Towards  Newcastle
+84X_1 Towards  Kilcoole
+84X_2 Towards  Kilcoole
+84X_3 Towards  Kilcoole
+84X_4 Towards  Eden Quay
+84X_5 Towards  Eden Quay
+84X_6 Towards  Eden Quay
+9_0 Towards  Limekiln Avenue
+9_1 Towards  O'Connell St
+9_2 Towards  Charlestown
+9_3 Towards  Parnell Sq

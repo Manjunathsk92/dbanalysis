@@ -179,9 +179,8 @@ class time_tabler():
 
 class stop_time_table():
     """
-    Simple time table dependant on pandas
-    I don't think it can be scaled easily
-    Currently only intended to work for a single day
+    Finished time table. Converts multiple dataframes into a nested dictionary of numpy arrays.
+    Has methods for efficiently searching and returning them.
     """
     def __init__(self):
         self.has_data = [False for i in range(7)]
@@ -202,7 +201,7 @@ class stop_time_table():
     def concat_and_sort(self):
         """
         Concat and sort data frames for each available day, and save them as raw numpy matrices.
-        it is hoped that the raw numpy matrics will be faster to query
+        Tt is hoped that the raw numpy matrics will be faster to query
         """
         for link in self.to_concat:
             
@@ -223,7 +222,7 @@ class stop_time_table():
     def get_next(self,day,link,current_time,route):
         """
         This is the prediction method that actually gets used.
-        Returns the next arrival time for the current_stop, and the time it gets to the next stop.
+        Returns the next arrival time for the current_stop, and the time the bus gets to the next stop.
         """        
         if day not in self.data:
             print('missing day')
@@ -237,6 +236,7 @@ class stop_time_table():
             return None
         import numpy as np
         try:
+            #efficent numpy look up.
             index=[np.searchsorted(self.data[day][link][route][0:,0],current_time)]
         except:
             print('broken for this route')

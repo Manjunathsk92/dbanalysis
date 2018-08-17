@@ -162,6 +162,8 @@ class stop():
     def get_foot_links(self):
         """
         Super inefficient method. Finds the closest five stops to this stop and adds them as footlinks.
+        The closesness of every stop was calculated in the stop_foot_distance.pickle.
+        This method slows down networking building significantly, but we don't have time to change it.
         """
         import pickle
         import os

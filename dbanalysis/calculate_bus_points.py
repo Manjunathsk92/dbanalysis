@@ -1,3 +1,8 @@
+"""
+Script used for calculating dublin bus points based on difference travelled. Currently set to run once a night.
+
+"""
+
 import haversine
 import time
 from datetime import datetime
@@ -49,7 +54,7 @@ for user in df_all_users.itertuples():
             current_time = time_of_day
 
         else:
-            #if more than an hour, don't award mileage points as the user hasn't been on the bus in the interim
+            #if more than half an hour, don't award mileage points as the user hasn't been on the bus in the interim
             total_points += single_login_points
             current_time = time_of_day
             current_location = (row[2],row[3])
