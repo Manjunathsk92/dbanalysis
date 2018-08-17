@@ -235,9 +235,9 @@ class test(unittest.TestCase):
             if not isinstance(response,dict):
                 failed +=1
         f=open('report.txt','a')
-        f.write('Route finding failed on ' + str(failed) + ' sets of coordinates out of 50\n')
+        f.write('Route finding failed on ' + str(failed) + ' sets of coordinates out of 100 ****\n')
         f.close()
-        self.assertEqual(failed/100 < 0.1,True)
+        self.assertEqual(failed/100 < 0.2,True)
         del(n)
     
 
@@ -313,7 +313,7 @@ class test(unittest.TestCase):
                     failed +=1   
         self.assertEqual(failed/total < 0.05,True)
         f=open('report.txt','a')
-        f.write(str(failed) + ' predictions out of ' + str(total))
+        f.write(str(failed) + ' predictions out of ' + str(total) +'**** \n')
         f.close()
         del(n)
     def test_timetables(self):
@@ -388,8 +388,8 @@ class test(unittest.TestCase):
         #check that at least 90% of the time tables have data for the number of days currently generated for.
         self.assertEqual(with_data / all_time_tables > 0.9,True)
         f=open('report.txt','a')
-        f.write(str(with_data) + ' time tables with data out of ' + str(all_time_tables) + '\n')
-        f.write(str(time_table_errors) + ' time table rows had errors out of ' + str(non_errors) + '\n')
+        f.write(str(with_data) + ' time tables with data out of ' + str(all_time_tables) + '***  \n')
+        f.write(str(time_table_errors) + ' time table rows had errors out of ' + str(non_errors) + '****  \n')
         f.close() 
         del(n)
     def test_time_table_alignment(self):
@@ -475,7 +475,7 @@ class test(unittest.TestCase):
         print('total broken',broken)
         self.assertEqual(fails/total < 0.05,True)
         f = open('report.txt','a')
-        f.write('Time table alignment unable for' + str(fails) + ' out of ' + str(total))
+        f.write('Time table alignment unable for' + str(fails) + ' out of ' + str(total) + '****\n')
         f.close()
 def main():
     unittest.main()

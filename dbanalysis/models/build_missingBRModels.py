@@ -1,3 +1,9 @@
+"""
+Not sure if this script was ever run or completed.
+Ignore
+
+"""
+
 import os
 import pickle
 from dbanalysis.models import BRM

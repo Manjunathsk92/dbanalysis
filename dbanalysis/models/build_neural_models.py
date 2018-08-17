@@ -10,6 +10,9 @@ from sklearn.preprocessing import StandardScaler as ss
     
 
 def model_stop(df):
+    """
+    Create a model from a dataframe.
+    """
     #create a model from a dataframe  
     
     #df = pd.get_dummies(df,columns=['day'])
@@ -64,6 +67,8 @@ def model_route(route,variation,v_num):
             elif df.shape[0] < 100:
                 fail = True
             else:
+                # Really this should have been done multiple times, and then the best model kept.
+                # We weren't aware just what the randomized weights of sklearn's MLPRegressor's entailed.
                 model,X,features,X_scaler,Y_scaler,Y_real = model_stop(df)
                 if not validate_model(model,X,features,Y_scaler,Y_real):
                     fail = True

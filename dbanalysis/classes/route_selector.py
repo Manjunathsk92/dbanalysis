@@ -24,7 +24,7 @@ class selector():
         f.close()
 
     def return_all_routes(self):
-        return {'routes':[route for route in self.routes]}
+        return {'routes':[route for route in self.routes if route not in ['47','68X']]}
 
     def return_variations(self,route):
         return {route : ['Towards ' + variation[0] for variation in self.routes[route]]}

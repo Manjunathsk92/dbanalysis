@@ -7,6 +7,11 @@ Bunch of code for getting and prepping data about stops. Includes stop_finder an
 import haversine
 import os
 import pandas as pd
+def b_dir():
+    import os
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    return BASE_DIR
+
 def get_stop_link(stopA,stopB, src='file',merge_weather=False):
     
     """
@@ -63,7 +68,7 @@ class stop_getter():
         import pickle
         import json
         import haversine
-        base_dir = '/home/student/dbanalysis/dbanalysis/resources/'
+        base_dir = b_dir() + '/dbanalysis/resources/'
         with open(base_dir+'trimmed_stops_shapes_map.pickle','rb') as handle:
             self.stops_map = pickle.load(handle)
         with open(base_dir+'new_stops_dict.bin','rb') as handle:
@@ -182,13 +187,13 @@ class stop_finder():
 
     def __init__(self):
         import pickle
-        with open('/home/student/dbanalysis/dbanalysis/resources/stop_clusters.pickle','rb') as handle:
+        with open(b_dir()+'/dbanalysis/resources/stop_clusters.pickle','rb') as handle:
 
             self.clusters = pickle.load(handle)
         import haversine
         from math import inf
         import json
-        self.stops_dict = json.loads(open('/home/student/dbanalysis/dbanalysis/resources/stops_trimmed.json','rb').read())
+        self.stops_dict = json.loads(open(b_dir()+'/dbanalysis/resources/stops_trimmed.json','rb').read())
 
     def find_closest_stops(self,lat,lon):
         """

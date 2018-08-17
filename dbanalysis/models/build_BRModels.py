@@ -1,3 +1,9 @@
+"""
+@Diarmuidm 
+Was used to build all of the BRModels
+
+"""
+
 import os
 import pickle
 from dbanalysis.models import BRM

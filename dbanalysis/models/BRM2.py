@@ -9,12 +9,7 @@ import numpy as np
 class BRModel():
     """
     Big route model class
-    uses the distance of a stop from first stop on a route to compute predictions lalalala
-    MAPE and r2 scores are not as good as they were in the notebook
-    (we achieved 0.57 r2, and 7% MAPE on the time to complete the route)
-    Should look into this.
-
-    Planned time of arrival boosts score considerably
+    This one was almost identical to BRM.py
     """
     def __init__ (self, route,variation,verbose=False,src='build',rgr='RandomForest',\
                 mode='validate',features = ['base_time_dep','day','distance','vappr','rain','temp'],use_dummies=True):
@@ -32,7 +27,7 @@ class BRModel():
         
         if src == 'build':
             if not self.can_be_modelled():
-                print('fuck')
+                
                 raise ValueError ('Missing data for modelling this route')
 
             self.gather_data()

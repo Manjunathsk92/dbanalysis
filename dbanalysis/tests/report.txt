@@ -1,28 +1,21 @@
-*******Test report for 2018-08-16 23:33:39.468905*******
-Network object constructed and all timetables generated in 369.6418318748474seconds
-*******Test report for 2018-08-17 00:07:24.404821*******
-Network object constructed and all timetables generated in 386.71022510528564seconds
-Route finding failed on 34 sets of coordinates out of 50
-3689 time tables with data out of 4575
-0 time table rows had errors out of 1666682
-*******Test report for 2018-08-17 00:55:39.890570*******
-Network object constructed and all timetables generated in 410.1317892074585seconds
-0 predictions out of 467Time table alignment unable for0 out of 994575 time tables with data out of 4575
-0 time table rows had errors out of 1851807
-0 predictions out of 467Time table alignment unable for0 out of 954575 time tables with data out of 4575
-0 time table rows had errors out of 1851807
-0 predictions out of 467Time table alignment unable for0 out of 994575 time tables with data out of 4575
-0 time table rows had errors out of 1851807
-0 predictions out of 467Route finding failed on 13 sets of coordinates out of 50
-Time table alignment unable for0 out of 974575 time tables with data out of 4575
-0 time table rows had errors out of 1851807
-0 predictions out of 467Route finding failed on 12 sets of coordinates out of 50
-Time table alignment unable for0 out of 964575 time tables with data out of 4575
-0 time table rows had errors out of 1851807
-*******Test report for 2018-08-17 01:29:32.994560*******
-Network object constructed and all timetables generated in 387.9524521827698seconds
-0 predictions out of 467Route finding failed on 16 sets of coordinates out of 50
-Time table alignment unable for0 out of 984575 time tables with data out of 4575
-0 time table rows had errors out of 1851807
-0 predictions out of 467Time table alignment unable for0 out of 984575 time tables with data out of 4575
-0 time table rows had errors out of 1851807
+0 predictions out of 467**** 
+Time table alignment unable for0 out of 1004523 time tables with data out of 4575***  
+0 time table rows had errors out of 1851807****  
+0 predictions out of 467**** 
+Route finding failed on 11 sets of coordinates out of 100 ****
+Time table alignment unable for0 out of 994523 time tables with data out of 4575***  
+0 time table rows had errors out of 1851807****  
+0 predictions out of 467**** 
+Time table alignment unable for0 out of 98****
+4523 time tables with data out of 4575***  
+0 time table rows had errors out of 1851807****  
+0 predictions out of 467**** 
+Route finding failed on 13 sets of coordinates out of 100 ****
+Time table alignment unable for0 out of 99****
+4523 time tables with data out of 4575***  
+0 time table rows had errors out of 1851807****  
+0 predictions out of 467**** 
+Route finding failed on 17 sets of coordinates out of 100 ****
+Time table alignment unable for0 out of 95****
+4523 time tables with data out of 4575***  
+0 time table rows had errors out of 1851807****  

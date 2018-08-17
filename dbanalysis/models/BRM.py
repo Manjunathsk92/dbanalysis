@@ -33,7 +33,7 @@ class BRModel():
         
         if src == 'build':
             if not self.can_be_modelled():
-                print('fuck')
+                
                 raise ValueError ('Missing data for modelling this route')
 
             self.gather_data()
@@ -57,6 +57,10 @@ class BRModel():
                     pass    
 
     def build_neural_network(self):
+        """
+        On the last iteration of this (in the notebooks), minmax scaler was replaced
+        With a standard scaler for both X and Y
+        """
         import numpy as np
         msk = np.random.rand(len(self.data)) < 0.5
         self.train = self.data[msk]
@@ -81,7 +85,9 @@ class BRModel():
 
 
     def validate_neural_network(self):
-        
+        """
+        Was used to test the model
+        """
         self.train = self.data[self.data['year']==2016]
         self.test = self.data[self.data['year'] == 2017]
         from sklearn.preprocessing import MinMaxScaler as mms
@@ -147,6 +153,9 @@ class BRModel():
 
 
     def gather_data(self):
+        """
+        Gather every stop link file.
+        """
         if self.verbose:
             print('gathering data...')
         from dbanalysis import stop_tools
@@ -171,6 +180,9 @@ class BRModel():
         
 
     def preprocess(self):
+        """
+        Preprocess the data.
+        """
         if self.verbose:
             print('Preprocessing data')
         self.select_routes()
@@ -186,17 +198,27 @@ class BRModel():
         self.data=self.data[self.data['traveltime']>0]
         self.data['planned_traveltime'] = self.data['plannedtime_arr_from'] - self.data['base_time_dep']
     def select_routes(self):
+        """
+        Can only use routes with the right route id, so drop everything else
+        """
         if self.verbose:
             print('parsing routeids')
         routeids = self.data['routeid'].unique()
         valid_routeids = [r for r in routeids if r.split('_')[0] == self.route]
         self.data = self.data[self.data['routeid'].isin(valid_routeids)]
     def clean_1(self):
+        """
+        Drop any null values. This was used when there was still problems with our weather data.
+        """
         if self.verbose:
             print('dropping null values')
         self.data = self.data.dropna()
         
     def add_distances(self):
+        """
+        Add the distance of each stop from the first stop on the route.
+        """
+
         if self.verbose:
             print('adding distances')
         s_getter =stop_tools.stop_getter()
@@ -212,6 +234,10 @@ class BRModel():
         self.data['distance']=self.data['stopA'].apply(lambda x: route_distances[x])
         del(s_getter)
     def add_base_departure_time(self):
+        """
+        For every row of data, add the time of leaving the first stop, when the tripid and dayofservice match.
+        """
+        
         if self.verbose:
             print('adding base departure times')
        
@@ -225,6 +251,9 @@ class BRModel():
         del(keys2)
     
     def add_time_info(self):
+        """
+        Add time information to the dataframe.
+        """
         if self.verbose:
             print('adding time information')
         time_format = "%d-%b-%y %H:%M:%S"
@@ -236,6 +265,10 @@ class BRModel():
         self.data['year']=self.data['dt'].dt.year
         self.data['date'] = self.data['dt'].dt.date
     def merge_weather(self,weather=None):
+        """
+        Merge with weather data.
+        """
+
         if self.verbose:
             print('merging weather')
         if weather == None:
@@ -249,6 +282,11 @@ class BRModel():
         del(weather)
 
     def add_dummies(self):
+        """
+        Add dummies, if they're being used. This led to lots of problems.
+        To run the model, we basically had to fill in missing days and hours.
+        Month should never have been used in the first place.
+        """
         if self.verbose:
             print('Making dummy features')
         self.data = pd.get_dummies(self.data,columns=['day','month','hour'])
@@ -261,6 +299,9 @@ class BRModel():
                                 or col[0:5] == 'month' or col[0:4] == 'hour']
        
     def can_be_modelled(self):
+        """
+        Make sure we have at least the first stop on the route.
+        """
         if self.verbose:
             print('Checking for data files')
         import os

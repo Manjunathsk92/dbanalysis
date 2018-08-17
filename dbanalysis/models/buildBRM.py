@@ -1,3 +1,8 @@
+"""
+Builds a single BRModel
+
+"""
+
 import sys
 route = sys.argv[1]
 variation = int(sys.argv[2])

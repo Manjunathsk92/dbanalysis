@@ -458,7 +458,7 @@ class simple_network():
             current_node = node_props[4]
             
             current_route = node_props[5]
-            
+            #if this isn't a transfer, check if it is visited 
             if current_route[0] != 't': 
                 ws = weights[current_node][current_route]
                 visited = ws[4]
@@ -475,6 +475,8 @@ class simple_network():
                 break
             if visited or current_node not in graph:
                 # if a node hasn't being visited, or by some mistake its not in the graph, skip ahead.
+                # checking that the node is in the graph is undoubtedly glue code, and hurting optimization
+                # but we have a very slightly broken graph, so it will have to do
                 continue
                 
             elif current_route[0]!= 't':
@@ -500,7 +502,7 @@ class simple_network():
                 time = current_time
                 wait_time = 0
                 # if the link is visited, or we have already transferred from it, continue
-                if weights[link_name][route][4] or route == cant_take:
+                if (route in weights[link_name] and weights[link_name][route][4]) or route == cant_take:
                     continue
                 elif route == current_route or current_route[0] == 't':
                     # if this is a walking link, look up the time needed to walk 
